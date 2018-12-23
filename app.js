@@ -42,8 +42,9 @@ app.use(bodyParser());
              res.send("The card has been declined" + err)
          }
      }
-   });
+   } );
  });
+});
      // YOUR CODE: Save the customer ID and other info in a database for later.
      
 
