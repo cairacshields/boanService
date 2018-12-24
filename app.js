@@ -16,34 +16,34 @@ app.use(bodyParser());
 3. charge amount in cents 
 
 */
- app.post('/charge', function(req, res) {
-    var stripeToken = req.body.stripeToken;
+//  app.post('/charge', function(req, res) {
+//     var stripeToken = req.body.stripeToken;
 
- 	(async function() {
- 	  // Create a Customer:
- 	  const customer = await stripe.customers.create({
- 	    source: stripeToken,
- 	    email: req.body.email,
- 	  });
+//  	(async function() {
+//  	  // Create a Customer:
+//  	  const customer = await stripe.customers.create({
+//  	    source: stripeToken,
+//  	    email: req.body.email,
+//  	  });
 
-     var charge = stripe.charges.create({
-         amount: req.body.amount,
-     	currency: 'usd',
-     	customer: customer.id
-     }, 
-     function(err, charge) {
-         if (err && err.type === 'StripeCardError') {
-             console.log("The card has been declined");
-             res.write("The card has been declined" + err)
-             res.send("The card has been declined" + err)
+//      var charge = stripe.charges.create({
+//          amount: req.body.amount,
+//      	currency: 'usd',
+//      	customer: customer.id
+//      }, 
+//      function(err, charge) {
+//          if (err && err.type === 'StripeCardError') {
+//              console.log("The card has been declined");
+//              res.write("The card has been declined" + err)
+//              res.send("The card has been declined" + err)
             
-         }else if(err){
-			res.write("The card has been declined" + err)
-             res.send("The card has been declined" + err)
-         }
-     }); 
-  });
-});
+//          }else if(err){
+// 			res.write("The card has been declined" + err)
+//              res.send("The card has been declined" + err)
+//          }
+//      }); 
+//   });
+// });
      // YOUR CODE: Save the customer ID and other info in a database for later.
      
 
