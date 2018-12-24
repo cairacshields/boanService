@@ -6,7 +6,7 @@ var stripe = require("stripe")("sk_test_km8Vo3mjUEOtkU2SaizC6QmR");
 var app = express();
 // set the port of our application
 // process.env.PORT lets the port be set by Heroku
-var port = process.env.PORT || 8080
+var port = process.env.PORT || 3000
 app.use(bodyParser());
 
 //Need to send the following items in the request body on the client side
