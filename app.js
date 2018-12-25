@@ -19,6 +19,8 @@ var db = admin.database();
 var ref = db.ref("restricted_access/secret_document");
 ref.once("value", function(snapshot) {
   console.log(snapshot.val());
+}, function (errorObject) {
+  console.log("The read failed: " + errorObject.code);
 });
 
 var refUsers = db.ref("users"); //base db reference to the user node... need to chain the userId 
