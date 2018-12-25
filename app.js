@@ -72,7 +72,7 @@ app.post("/charge", function(req, res){
 		//get the user and update the customerId
 		  var user = snapshot.val();
 		  //refUsers.child("customerId").set(customer.id)
-		  res.send(user.customerId);
+		  res.write(user.email);
 
 		}, function (err, errorObject) {
 
