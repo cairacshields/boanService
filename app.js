@@ -7,7 +7,7 @@ var app = express();
 // set the port of our application
 // process.env.PORT lets the port be set by Heroku
 var port = process.env.PORT || 3000
-app.use(express.bodyParser());
+app.use(bodyParser());
 
 // app.use(bodyParser());
 
