@@ -50,7 +50,7 @@ app.post("/charge", function(req, res){
 	 	    email: userEmail
 	 	 });
 
- 	   var charge = await stripe.charges.create({
+ 	   var charge = stripe.charges.create({
 	        amount: centAmount,
 	     	currency: 'usd',
 	     	customer: customer.id
