@@ -44,44 +44,77 @@ app.post("/charge", function(req, res){
 
 	var refUsers = db.ref("users/"+userId);
 
-	   stripe.customers.create({
-	 	    source: stripeToken,
-	 	    email: userEmail
-	 	 }, function(err, customer) {
-		  // asynchronously called
+	//Step 1. check the DB to see if the user already has a customer ID on file 
+   refUsers.on("value", function(snapshot) {
+		var user = snapshot.val();
+		if(user.customerId == null){
+			//Current user, does not have a customer id... we need to create a customer object for them 
+			stripe.customers.create({
+				 	    source: stripeToken,
+				 	    email: userEmail
+				 	 }, function(err, customer) {
+					  // asynchronously called
+					  	//As long as the newly created customer object is not null, we can go ahead with the charge
+					  	if(customer != null){
+					  	   var customer =  customer;
+					 	   var charge = stripe.charges.create({
+						        amount: centAmount,
+						     	currency: 'usd',
+						     	customer: customer.id
+						     }, 
+						     function(err, charge) {
+						         if (err && err.type === 'StripeCardError') {
+						             console.log("The card has been declined");
+						             res.write("The card has been declined" + err)
+						            
+						         }else if(err){
+									res.write("The card has been declined" + err)
+						         }
+						     });
 
-		  	if(customer != null){
-		  	   var customer =  customer;
-		 	   var charge = stripe.charges.create({
-			        amount: centAmount,
-			     	currency: 'usd',
-			     	customer: customer.id
-			     }, 
-			     function(err, charge) {
-			         if (err && err.type === 'StripeCardError') {
-			             console.log("The card has been declined");
-			             res.write("The card has been declined" + err)
-			            
-			         }else if(err){
-						res.write("The card has been declined" + err)
-			         }
-			     });
+					 	//Also need to set the new customerId value in the DB 
+					 	refUsers.child("customerId").set(customer.id);
+					 
+					 	}else{
+					 		res.write("error " + err);
+					 	}
+					});
+		}else if(user.customerId != null){
+			//The user already has a customer Id saved in the DB... just retreive that and create a charge 
+			stripe.customers.retrieve(
+			  user.customerId,
+			  function(err, customer) {
+			    // asynchronously called
+			    if(customer != null){
+			    	//we've got the customer using the existing customer id 
+			    	//Now just charge them 
+			    	var charge = stripe.charges.create({
+						        amount: centAmount,
+						     	currency: 'usd',
+						     	customer: customer.id
+						     }, 
+						     function(err, charge) {
+						         if (err && err.type === 'StripeCardError') {
+						             console.log("The card has been declined");
+						             res.write("The card has been declined" + err)
+						            
+						         }else if(err){
+									res.write("The card has been declined" + err)
+						         }
+						     });
 
-		 	   refUsers.on("value", function(snapshot) {
-				//get the user and update the customerId
-				  var user = snapshot.val();
-				  //refUsers.child("customerId").set(customer.id)
-				  res.write(user.email);
-
-				}, function (err, errorObject) {
-
-				  console.log("The read failed: " + errorObject.code);
-				  res.send(errorObject.code);
-				});
-		 	}else{
-		 		res.write("error " + err);
-		 	}
-		});
+			    }else{ 
+			    	res.write("error " + err);
+			    }
+			  }
+			);
+		}
+	
+	}, function (err, errorObject) {
+		console.log("The read failed: " + errorObject.code);
+		res.send(errorObject.code);
+	});
+	  
  });   
 
 app.get("/", ( req, res, next) => {
