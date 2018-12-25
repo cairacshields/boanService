@@ -80,9 +80,7 @@ app.post("/charge", function(req, res){
 		  res.write(errorObject.code);
 		});
 
- 	});
-
-});     
+ 	} );   
 
 app.get("/", ( req, res, next) => {
  res.json(["Tony","Lisa","Michael","Ginger","Food"]);
