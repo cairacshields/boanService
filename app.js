@@ -47,6 +47,7 @@ app.use(bodyParser());
      // YOUR CODE: Save the customer ID and other info in a database for later.
      
 app.post("/charge", function(req, res){
+	res.send(req.body.phrase);
 	res.write("Hello, World" + req.body.phrase);
 });     
 
