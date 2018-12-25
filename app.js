@@ -43,42 +43,44 @@ app.post("/charge", function(req, res){
 
 	var refUsers = db.ref("users/"+userId);
 
-	// function() {
-	 	  // Create a Customer:
 	   var customer = stripe.customers.create({
 	 	    source: stripeToken,
 	 	    email: userEmail
-	 	 });
+	 	 }, function(err, customer) {
+		  // asynchronously called
 
- 	   var charge = stripe.charges.create({
-	        amount: centAmount,
-	     	currency: 'usd',
-	     	customer: customer.id
-	     }, 
-	     function(err, charge) {
-	         if (err && err.type === 'StripeCardError') {
-	             console.log("The card has been declined");
-	             res.write("The card has been declined" + err)
-	            
-	         }else if(err){
-				res.write("The card has been declined" + err)
-	         }
-	     });
-	 // }; 
+		  	if(customer != null){
+		 	   var charge = stripe.charges.create({
+			        amount: centAmount,
+			     	currency: 'usd',
+			     	customer: customer.id
+			     }, 
+			     function(err, charge) {
+			         if (err && err.type === 'StripeCardError') {
+			             console.log("The card has been declined");
+			             res.write("The card has been declined" + err)
+			            
+			         }else if(err){
+						res.write("The card has been declined" + err)
+			         }
+			     });
 
- 	   refUsers.on("value", function(snapshot) {
-		//get the user and update the customerId
-		  var user = snapshot.val();
-		  //refUsers.child("customerId").set(customer.id)
-		  res.write(user.email);
+		 	   refUsers.on("value", function(snapshot) {
+				//get the user and update the customerId
+				  var user = snapshot.val();
+				  //refUsers.child("customerId").set(customer.id)
+				  res.write(user.email);
 
-		}, function (err, errorObject) {
+				}, function (err, errorObject) {
 
-		  console.log("The read failed: " + errorObject.code);
-		  res.send(errorObject.code);
+				  console.log("The read failed: " + errorObject.code);
+				  res.send(errorObject.code);
+				});
+		 	}else{
+		 		res.write(err);
+		 	}
 		});
-
- 	} );   
+ });   
 
 app.get("/", ( req, res, next) => {
  res.json(["Tony","Lisa","Michael","Ginger","Food"]);
