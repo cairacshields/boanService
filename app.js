@@ -5,7 +5,7 @@ var express = require("express"),
 
 //App configurations below
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended:true}));
+app.use(bodyParser.urlencoded({extended:false}));
 
 // app.use(bodyParser());
 
