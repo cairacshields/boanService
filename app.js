@@ -72,12 +72,12 @@ app.post("/charge", function(req, res){
 		//get the user and update the customerId
 		  var user = snapshot.val();
 		  //refUsers.child("customerId").set(customer.id)
-		  res.write(user.customerId);
+		  res.write(user.customerId.toString());
 
 		}, function (err, errorObject) {
 
 		  console.log("The read failed: " + errorObject.code);
-		  res.write(errorObject.code);
+		  res.write(errorObject.code.toString());
 		});
 
  	} );   
