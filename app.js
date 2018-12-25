@@ -1,11 +1,27 @@
 var express = require("express"),
 	bodyParser = require('body-parser'),
  	stripe = require("stripe")("sk_test_km8Vo3mjUEOtkU2SaizC6QmR"),
+ 	admin = require('firebase-admin'),
+ 	serviceAccount = require('/serviceAccountKey.json');
 	app = express();
 
 //App configurations below
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:false}));
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://boan-744fb.firebaseio.com"
+});
+
+// As an admin, the app has access to read and write all data, regardless of Security Rules
+var db = admin.database();
+var ref = db.ref("restricted_access/secret_document");
+ref.once("value", function(snapshot) {
+  console.log(snapshot.val());
+});
+
+var refUsers = db.ref("users"); //base db reference to the user node... need to chain the userId 
 
 // app.use(bodyParser());
 
