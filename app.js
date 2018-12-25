@@ -23,7 +23,7 @@ ref.once("value", function(snapshot) {
   console.log("The read failed: " + errorObject.code);
 });
 
-var refUsers = db.ref("users"); //base db reference to the user node... need to chain the userId 
+var refUsers = db.ref("users/"); //base db reference to the user node... need to chain the userId 
 
 // app.use(bodyParser());
 
@@ -65,6 +65,23 @@ var refUsers = db.ref("users"); //base db reference to the user node... need to 
      // YOUR CODE: Save the customer ID and other info in a database for later.
      
 app.post("/charge", function(req, res){
+	//val stripeToken = req.body.stripeToken;
+	//val userEmail = req.body.email;
+	val userId = req.body.userId;
+	//val centAmount = req.body.amount;
+
+	var refUsers = db.ref("users/"+userId);
+
+	refUsers.on("value", function(snapshot) {
+	  var user = snapshot.val();
+	  res.write(user.email);
+
+	}, function (errorObject) {
+
+	  console.log("The read failed: " + errorObject.code);
+	  res.write(errorObject.code);
+	});
+
 	res.write("Hello, World " + req.body.phrase);
 });     
 
