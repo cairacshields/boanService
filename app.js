@@ -1,13 +1,10 @@
-var express = require("express");
-var bodyParser = require('body-parser');
-// Set your secret key: remember to change this to your live secret key in production
-// See your keys here: https://dashboard.stripe.com/account/apikeys
-var stripe = require("stripe")("sk_test_km8Vo3mjUEOtkU2SaizC6QmR");
-var app = express();
-// set the port of our application
-// process.env.PORT lets the port be set by Heroku
-var port = process.env.PORT || 3000
-app.use(bodyParser());
+var express = require("express"),
+	bodyParser = require('body-parser'),
+ 	stripe = require("stripe")("sk_test_km8Vo3mjUEOtkU2SaizC6QmR"),
+	app = express();
+
+//App configurations below
+app.use(bodyParser.urlencoded({extended:true}));
 
 // app.use(bodyParser());
 
@@ -49,7 +46,7 @@ app.use(bodyParser());
      // YOUR CODE: Save the customer ID and other info in a database for later.
      
 app.post("/charge", function(req, res){
-	res.write("Hello, World" + req.body.phrase);
+	res.write("Hello, World " + req.body.phrase);
 });     
 
 app.get("/", ( req, res, next) => {
