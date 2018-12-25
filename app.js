@@ -76,7 +76,7 @@ app.post("/charge", function(req, res){
 					 	refUsers.child("customerId").set(customer.id);
 					 
 					 	}else{
-					 		res.write("error " + err);
+					 		res.write("error line 79 " + err);
 					 	}
 					});
 		}else if(user.customerId != null){
@@ -104,7 +104,7 @@ app.post("/charge", function(req, res){
 						     });
 
 			    }else{ 
-			    	res.write("error " + err);
+			    	res.write("error line 107 " + err);
 			    }
 			  }
 			);
