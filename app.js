@@ -59,11 +59,9 @@ app.post("/charge", function(req, res){
 	         if (err && err.type === 'StripeCardError') {
 	             console.log("The card has been declined");
 	             res.write("The card has been declined" + err)
-	             res.send("The card has been declined" + err)
 	            
 	         }else if(err){
 				res.write("The card has been declined" + err)
-	             res.send("The card has been declined" + err)
 	         }
 	     });
 	 // }; 
