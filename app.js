@@ -74,7 +74,8 @@ app.post("/charge", function(req, res){
 
 					 	//Also need to set the new customerId value in the DB 
 					 	refUsers.child("customerId").set(customer.id);
-					 
+					 	res.send("Request is processing");
+
 					 	}else{
 					 		res.write("error line 79 " + err);
 					 	}
@@ -102,7 +103,7 @@ app.post("/charge", function(req, res){
 									res.write("The card has been declined" + err)
 						         }
 						     });
-
+			    	res.send("Request is processing");
 			    }else{ 
 			    	res.write("error line 107 " + err);
 			    }
