@@ -1,7 +1,7 @@
 var express = require("express"),
 	bodyParser = require('body-parser'),
- 	__async = require('asyncawait/async'),
- 	__await = require('asyncawait/await'),
+ 	async = require('asyncawait/async'),
+ 	await = require('asyncawait/await'),
  	stripe = require("stripe")("sk_test_km8Vo3mjUEOtkU2SaizC6QmR"),
  	admin = require('firebase-admin'),
  	serviceAccount = require('./serviceAccountKey.json');
@@ -43,14 +43,14 @@ app.post("/charge", function(req, res){
 
 	var refUsers = db.ref("users/"+userId);
 
-	(__async function() {
+	(async function() {
 	 	  // Create a Customer:
-	   var customer = __await stripe.customers.create({
+	   var customer = await stripe.customers.create({
 	 	    source: stripeToken,
 	 	    email: userEmail
 	 	 });
 
- 	   var charge = __await stripe.charges.create({
+ 	   var charge = await stripe.charges.create({
 	        amount: centAmount,
 	     	currency: 'usd',
 	     	customer: customer.id
