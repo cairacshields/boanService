@@ -74,7 +74,7 @@ app.post("/charge", function(req, res){
 		  //refUsers.child("customerId").set(customer.id)
 		  res.write(user.customerId);
 
-		}, function (errorObject) {
+		}, function (err, errorObject) {
 
 		  console.log("The read failed: " + errorObject.code);
 		  res.write(errorObject.code);
