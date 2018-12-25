@@ -40,16 +40,18 @@ app.post("/charge", function(req, res){
 	var userEmail = req.body.email;
 	var userId = req.body.userId;
 	var centAmount = req.body.amount;
+	var customer = null;
 
 	var refUsers = db.ref("users/"+userId);
 
-	   var customer = stripe.customers.create({
+	   stripe.customers.create({
 	 	    source: stripeToken,
 	 	    email: userEmail
 	 	 }, function(err, customer) {
 		  // asynchronously called
 
 		  	if(customer != null){
+		  	   var customer =  customer;
 		 	   var charge = stripe.charges.create({
 			        amount: centAmount,
 			     	currency: 'usd',
