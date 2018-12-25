@@ -46,7 +46,7 @@ app.use(bodyParser.urlencoded({extended:false}));
 // });
      // YOUR CODE: Save the customer ID and other info in a database for later.
      
-app.post("/charge", function(req, res){
+app.post("/charge",bodyParser , function(req, res){
 	res.write("Hello, World " + req.body.phrase);
 });     
 
