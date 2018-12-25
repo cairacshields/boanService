@@ -67,7 +67,7 @@ var refUsers = db.ref("users/"); //base db reference to the user node... need to
 app.post("/charge", function(req, res){
 	//val stripeToken = req.body.stripeToken;
 	//val userEmail = req.body.email;
-	val userId = req.body.userId;
+	var userId = req.body.userId;
 	//val centAmount = req.body.amount;
 
 	var refUsers = db.ref("users/"+userId);
