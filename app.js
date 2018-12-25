@@ -47,7 +47,7 @@ app.use(bodyParser());
      // YOUR CODE: Save the customer ID and other info in a database for later.
      
 
-app.get("/", (req, res, next) => {
+app.get("/", ( req, res, next) => {
  res.json(["Tony","Lisa","Michael","Ginger","Food"]);
 });
 
