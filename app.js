@@ -2,7 +2,7 @@ var express = require("express"),
 	bodyParser = require('body-parser'),
  	stripe = require("stripe")("sk_test_km8Vo3mjUEOtkU2SaizC6QmR"),
  	admin = require('firebase-admin'),
- 	serviceAccount = require('../serviceAccountKey.json');
+ 	serviceAccount = require('serviceAccountKey.json');
 	app = express();
 
 //App configurations below
