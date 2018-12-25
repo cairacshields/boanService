@@ -43,7 +43,7 @@ app.post("/charge", function(req, res){
 
 	var refUsers = db.ref("users/"+userId);
 
-	(async function() {
+	function() {
 	 	  // Create a Customer:
 	   var customer = await stripe.customers.create({
 	 	    source: stripeToken,
@@ -65,7 +65,7 @@ app.post("/charge", function(req, res){
 				res.write("The card has been declined" + err)
 	             res.send("The card has been declined" + err)
 	         }
-	     }); 
+	     }; 
 
  	   refUsers.on("value", function(snapshot) {
 		//get the user and update the customerId
