@@ -69,9 +69,6 @@ app.post("/charge", function(req, res){
 						            
 						         }else if(err){
 									res.write("The card has been declined" + err)
-									res.send("The card has been declined" + err)
-						         }else{
-						         	res.send("Charge results " + charge);
 						         }
 						     });
 
@@ -104,9 +101,6 @@ app.post("/charge", function(req, res){
 						            
 						         }else if(err){
 									res.write("The card has been declined" + err)
-									res.send("The card has been declined" + err)
-						         }else{
-						         	res.send("Charge results " + charge);
 						         }
 						     });
 			    	res.send("Request is processing... using the existing customer id to create a charge.");
