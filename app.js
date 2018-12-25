@@ -79,7 +79,7 @@ app.post("/charge", function(req, res){
 				  res.send(errorObject.code);
 				});
 		 	}else{
-		 		res.write("error");
+		 		res.write("error " + err);
 		 	}
 		});
  });   
