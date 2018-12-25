@@ -45,7 +45,7 @@ app.post("/charge", function(req, res){
 
 	// function() {
 	 	  // Create a Customer:
-	   var customer = await stripe.customers.create({
+	   var customer = stripe.customers.create({
 	 	    source: stripeToken,
 	 	    email: userEmail
 	 	 });
