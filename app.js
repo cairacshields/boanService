@@ -46,6 +46,9 @@ app.use(bodyParser());
 // });
      // YOUR CODE: Save the customer ID and other info in a database for later.
      
+app.post("/charge", function(req, res){
+	res.write("Hello, World");
+});     
 
 app.get("/", ( req, res, next) => {
  res.json(["Tony","Lisa","Michael","Ginger","Food"]);
