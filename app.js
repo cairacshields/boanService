@@ -4,7 +4,8 @@ var express = require("express"),
  	await = require('asyncawait/await'),
  	stripe = require("stripe")("sk_test_km8Vo3mjUEOtkU2SaizC6QmR"),
  	admin = require('firebase-admin'),
- 	serviceAccount = require('./serviceAccountKey.json');
+ 	serviceAccount = require('./serviceAccountKey.json'),
+ 	schedule = require('node-schedule'),
 	app = express();
 
 //App configurations below
@@ -114,6 +115,7 @@ app.post("/charge", function(req, res){
 						         }else{
 						         	console.log("Something is up... " + user.customerId);
 						         	res.send({statusMessage : "Charge results " + charge});
+
 						         }
 						     });
 			    	console.log("Request is processing... using the existing customer id to create a charge.")
@@ -132,8 +134,29 @@ app.post("/charge", function(req, res){
 	  
  });   
 
+//Also need to create a function that will run once every day to check for scheduled payments.
+// Step 1. Using node-schedule, we create a job that will run once every day 
+//Step 2. This job will use a reference to the DB that stores the pending repay nodes, to grab the repay date attached to them
+	// and check it against today's date. 
+//If the dates match, we will attempt to charge the borrower, if that dates don't match... we will just skip it 
+//TODO ~~ we also need to handle what happens when the charge fails... will we change the date? 
+
+//This job is supposed to run every day at 01:00 
+schedule.scheduleJob('0 1 * * *', function(){
+  
+	//So in here we need to start by grabbing the correct DB reference. 
+	var refTermsAgreements = db.ref("termsAgreements");
+
+
+});
+
 app.get("/", ( req, res, next) => {
- res.json(["Tony","Lisa","Michael","Ginger","Food"]);
+	var refTermsAgreements = db.ref("termsAgreements");
+
+	refTermsAgreements.once("value", function(data) {
+  		res.json(data)
+	});
+ //res.json(["Tony","Lisa","Michael","Ginger","Food"]);
 });
 
 app.listen(3000, () => {
