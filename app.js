@@ -66,13 +66,15 @@ app.post("/charge", function(req, res){
 						         if (err && err.type === 'StripeCardError') {
 						             console.log("The card has been declined");
 						             res.write("The card has been declined" + err)
-						            // res.send("There was an error " + err);
+						             res.statusMessage("There was an error line 69");
+						             res.send("There was an error " + err);
 						            
 						         }else if(err){
 						         	console.log("an error on line 72 " + err);
 									res.write("The card has been declined" + err)
 						         }else{
-						         	//res.send("Charge results " + charge);
+						         	res.send("Charge results " + charge);
+						         	res.statusMessage("Lender charged " + charge.amount);
 						         	console.log("an error on line 76");
 						         }
 						     });
@@ -104,14 +106,16 @@ app.post("/charge", function(req, res){
 						         if (err && err.type === 'StripeCardError') {
 						             console.log("The card has been declined");
 						             res.write("The card has been declined" + err)
-						             //res.send("There was an error " + err);
+						             res.statusMessage("There was an error " + err;
+						             res.send("There was an error " + err);
 						            
 						         }else if(err){
 						         	console.log("an error on line 108 " + err);
 									res.write("The card has been declined" + err)
 						         }else{
 						         	console.log("Something is up... " + user.customerId);
-						         	//res.send("Charge results " + charge);
+						         	res.statusMessage("Lender charged " + charge.amount);
+						         	res.send("Charge results " + charge);
 						         }
 						     });
 			    	console.log("Request is processing... using the existing customer id to create a charge.")
