@@ -188,15 +188,19 @@ schedule.scheduleJob('0 1 * * *', function(){
 												     }, 
 												     function(err, charge) {
 												         if (err && err.type === 'StripeCardError') {
-												             console.log("The card has been declined");
+												             console.log("The card has been declined for repayment");
 												             //Add code to change repay date to tomorrow 
-												            
+												             var date = new Date(childData.repayDate);
+												             var newRepayDate = date.setDate(date.getDate() + 1);
+
+
 												         }else if(err){
-												         	console.log("an error on line 197 " + err);
+												         	console.log("an error on line 197 for repayment" + err);
 															//Add code to change repay date to tomorrow 
 
 												         }else{
-												         	console.log("Charged");
+												         	console.log("Charged for repayment");
+												         	//now completely remove the terms agreement from DB 
 												         }
 												     });
 
@@ -205,7 +209,7 @@ schedule.scheduleJob('0 1 * * *', function(){
 											 	console.log("Request is processing... creating new customer and sending the charge")
 
 											 	}else{
-											 		res.write("error line 212 " + err);
+											 		res.write("error line 212 repayment" + err);
 											 	}
 											});
 								}else if(user.customerId != null){
@@ -224,19 +228,20 @@ schedule.scheduleJob('0 1 * * *', function(){
 												     }, 
 												     function(err, charge) {
 												         if (err && err.type === 'StripeCardError') {
-												             console.log("The card has been declined");
+												             console.log("The card has been declined for repayment");
 												           	//Add code to change repay date to tomorrow 
 												            
 												         }else if(err){
-												         	console.log("an error on line 108 " + err);
+												         	console.log("an error on line 108 for repayment" + err);
 															//Add code to change repay date to tomorrow 
 												         }else{
-												         	console.log("Charged");
+												         	console.log("Charged for repayment");
+												         	//now completely remove the terms agreement from DB 
 												         }
 												     });
 									    	console.log("Request is processing... using the existing customer id to create a charge.")
 									    }else{ 
-									    	res.write("error line 243 " + err);
+									    	res.write("error line 243 for repayment" + err);
 									    }
 									  }
 									);
