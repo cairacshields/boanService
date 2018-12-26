@@ -258,7 +258,7 @@ schedule.scheduleJob('0 1 * * *', function(){
 			  	//Terms agreement hasn't been accepted yet... leave it alone 
 			  }
 
-  			}
+  			});
 		});
 
 	console.log("Daily job ran");
