@@ -172,8 +172,9 @@ app.get("/", ( req, res, next) => {
   		//if(data.accepted != false){
   			//The terms agreement has been accepted and the lender was charged. 
   			//Time to check the repay date, against today's date.
-  			var repayDate = new Date(data.repayDate);
-  			res.send(repayDate);
+  			//var miliDate = new Date(data.repayDate.getTime());
+  			var repayDate = new Date(data.repayDate.getTime());
+  			res.json(repayDate);
 
   		//}else{
   			//The terms agreement hasn't been accepted yet 
