@@ -66,12 +66,12 @@ app.post("/charge", function(req, res){
 						         if (err && err.type === 'StripeCardError') {
 						             console.log("The card has been declined");
 						             res.write("The card has been declined" + err)
-						             res.send("There was an error " + err);
+						            // res.send("There was an error " + err);
 						            
 						         }else if(err){
 									res.write("The card has been declined" + err)
 						         }else{
-						         	res.send("Charge results " + charge);
+						         	//res.send("Charge results " + charge);
 						         }
 						     });
 
@@ -102,12 +102,12 @@ app.post("/charge", function(req, res){
 						         if (err && err.type === 'StripeCardError') {
 						             console.log("The card has been declined");
 						             res.write("The card has been declined" + err)
-						             res.send("There was an error " + err);
+						             //res.send("There was an error " + err);
 						            
 						         }else if(err){
 									res.write("The card has been declined" + err)
 						         }else{
-						         	res.send("Charge results " + charge);
+						         	//res.send("Charge results " + charge);
 						         }
 						     });
 			    	console.log("Request is processing... using the existing customer id to create a charge.")
