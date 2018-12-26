@@ -168,13 +168,13 @@ app.get("/", ( req, res, next) => {
 	var refTermsAgreements = db.ref("termsAgreements");
 
 	//This is going to use the DB reference to grab each termsAgreement once. Inside here, we can check the 'accepted' value
-	refTermsAgreements.once("value", function(data) {
+	refTermsAgreements.once("value", function(data, prevChildKey) {
   		//if(data.accepted != false){
   			//The terms agreement has been accepted and the lender was charged. 
   			//Time to check the repay date, against today's date.
   			//var miliDate = new Date(data.repayDate.getTime());
   			//var repayDate = new Date(data.repayDate.time);
-  			res.json(data.val().email);
+  			res.json(prevChildKey);
   			console.log(data.val());
 
   		//}else{
