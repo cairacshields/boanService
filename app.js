@@ -174,8 +174,8 @@ app.get("/", ( req, res, next) => {
   			//Time to check the repay date, against today's date.
   			//var miliDate = new Date(data.repayDate.getTime());
   			//var repayDate = new Date(data.repayDate.time);
-  			res.json(data[0]);
-  			console.log(data[0]);
+  			res.json(data.val());
+  			console.log(data.val());
 
   		//}else{
   			//The terms agreement hasn't been accepted yet 
