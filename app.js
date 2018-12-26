@@ -69,9 +69,11 @@ app.post("/charge", function(req, res){
 						            // res.send("There was an error " + err);
 						            
 						         }else if(err){
+						         	console.log("an error on line 72 " + err);
 									res.write("The card has been declined" + err)
 						         }else{
 						         	//res.send("Charge results " + charge);
+						         	console.log("an error on line 76");
 						         }
 						     });
 
@@ -105,8 +107,10 @@ app.post("/charge", function(req, res){
 						             //res.send("There was an error " + err);
 						            
 						         }else if(err){
+						         	console.log("an error on line 108 " + err);
 									res.write("The card has been declined" + err)
 						         }else{
+						         	console.log("Something is up...");
 						         	//res.send("Charge results " + charge);
 						         }
 						     });
