@@ -175,12 +175,12 @@ app.get("/", ( req, res, next) => {
   			data.forEach(function(childSnapshot) {
   				 var childData = childSnapshot.val();
   				//Time to check the repay date, against today's date.
-	  			  var repayDate = new Date(childData.repayDate.time);
+	  			  var repayDate = new Date(childData.repayDate.time).toLocaleDateString("en-US");
 			      // key will be "ada" the first time and "alan" the second time
 			      //var key = childSnapshot.key;
 			      // childData will be the actual contents of the child
 			      //res.json(childData);
-  				  console.log(repayDate.toLocaleDateString("en-US"));
+  				  console.log(repayDate);
 			  });
 
   		//}else{
