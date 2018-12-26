@@ -171,16 +171,16 @@ app.get("/", ( req, res, next) => {
 	refTermsAgreements.once("value", function(data) {
   		//if(data.accepted != false){
   			//The terms agreement has been accepted and the lender was charged. 
-  			//Time to check the repay date, against today's date.
-  			//var miliDate = new Date(data.repayDate.getTime());
-  			//var repayDate = new Date(data.repayDate.time);
+  			//Let's go through all the termsAgreements using a forEach loop
   			data.forEach(function(childSnapshot) {
+  				 var childData = childSnapshot.val();
+  				//Time to check the repay date, against today's date.
+	  			  var repayDate = new Date(childData.repayDate.time);
 			      // key will be "ada" the first time and "alan" the second time
 			      //var key = childSnapshot.key;
 			      // childData will be the actual contents of the child
-			      var childData = childSnapshot.val();
 			      //res.json(childData);
-  				  console.log(childData);
+  				  console.log(repayDate);
 			  });
 
   		//}else{
