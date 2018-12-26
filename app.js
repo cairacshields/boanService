@@ -193,14 +193,25 @@ schedule.scheduleJob('0 1 * * *', function(){
 												             var date = new Date(childData.repayDate);
 												             var newRepayDate = date.setDate(date.getDate() + 1);
 
+												             //Not sure if this will work... but the hope is that, using the DB reference, we can grab the termsAgreement
+												             	//Then grab the original repayDate from that agreement and replace it with the newRepayDate.
+												             refTermsAgreements.child(childData.lenderUserId).child("repayDate").set(newRepayDate);
+
 
 												         }else if(err){
 												         	console.log("an error on line 197 for repayment" + err);
 															//Add code to change repay date to tomorrow 
+															var date = new Date(childData.repayDate);
+												             var newRepayDate = date.setDate(date.getDate() + 1);
+
+												             //Not sure if this will work... but the hope is that, using the DB reference, we can grab the termsAgreement
+												             	//Then grab the original repayDate from that agreement and replace it with the newRepayDate.
+												             refTermsAgreements.child(childData.lenderUserId).child("repayDate").set(newRepayDate);
 
 												         }else{
-												         	console.log("Charged for repayment");
+												         	console.log("Charged for repayment, agreement removed");
 												         	//now completely remove the terms agreement from DB 
+												         	refTermsAgreements.child(childData.lenderUserId).removeValue();
 												         }
 												     });
 
@@ -230,13 +241,26 @@ schedule.scheduleJob('0 1 * * *', function(){
 												         if (err && err.type === 'StripeCardError') {
 												             console.log("The card has been declined for repayment");
 												           	//Add code to change repay date to tomorrow 
+												           	 var date = new Date(childData.repayDate);
+												             var newRepayDate = date.setDate(date.getDate() + 1);
+
+												             //Not sure if this will work... but the hope is that, using the DB reference, we can grab the termsAgreement
+												             	//Then grab the original repayDate from that agreement and replace it with the newRepayDate.
+												             refTermsAgreements.child(childData.lenderUserId).child("repayDate").set(newRepayDate);
 												            
 												         }else if(err){
 												         	console.log("an error on line 108 for repayment" + err);
 															//Add code to change repay date to tomorrow 
+															 var date = new Date(childData.repayDate);
+												             var newRepayDate = date.setDate(date.getDate() + 1);
+
+												             //Not sure if this will work... but the hope is that, using the DB reference, we can grab the termsAgreement
+												             	//Then grab the original repayDate from that agreement and replace it with the newRepayDate.
+												             refTermsAgreements.child(childData.lenderUserId).child("repayDate").set(newRepayDate);
 												         }else{
-												         	console.log("Charged for repayment");
+												         	console.log("Charged for repayment, agreement removed");
 												         	//now completely remove the terms agreement from DB 
+												         	refTermsAgreements.child(childData.lenderUserId).removeValue();
 												         }
 												     });
 									    	console.log("Request is processing... using the existing customer id to create a charge.")
