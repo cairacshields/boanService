@@ -173,14 +173,14 @@ app.get("/", ( req, res, next) => {
   			//The terms agreement has been accepted and the lender was charged. 
   			//Time to check the repay date, against today's date.
   			var repayDate = new Date(data.repayDate);
-  			res.write(repayDate);
+  			res.json(repayDate);
 
   		//}else{
   			//The terms agreement hasn't been accepted yet 
   			//Do nothing 
   		//}
 	});
-	res.json(["Tony","Lisa","Michael","Ginger","Food"]);
+	//res.json(["Tony","Lisa","Michael","Ginger","Food"]);
 });
 
 app.listen(3000, () => {
