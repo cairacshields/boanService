@@ -144,55 +144,128 @@ app.post("/charge", function(req, res){
 //This job is supposed to run every day at 01:00 
 schedule.scheduleJob('0 1 * * *', function(){
   
-	//So in here we need to start by grabbing the correct DB reference. 
 	var refTermsAgreements = db.ref("termsAgreements");
 
 	//This is going to use the DB reference to grab each termsAgreement once. Inside here, we can check the 'accepted' value
 	refTermsAgreements.once("value", function(data) {
-  		if(data.accepted != false){
-  			//The terms agreement has been accepted and the lender was charged. 
-  			//Time to check the repay date, against today's date.
-  			var repayDate = new Date(data.repayDate);
-
-
-  		}else{
-  			//The terms agreement hasn't been accepted yet 
-  			//Do nothing 
-  		}
-	});
-
-
-});
-
-app.get("/", ( req, res, next) => {
-	var refTermsAgreements = db.ref("termsAgreements");
-
-	//This is going to use the DB reference to grab each termsAgreement once. Inside here, we can check the 'accepted' value
-	refTermsAgreements.once("value", function(data) {
-  		//if(data.accepted != false){
   			//The terms agreement has been accepted and the lender was charged. 
   			//Let's go through all the termsAgreements using a forEach loop
   			data.forEach(function(childSnapshot) {
   				 var childData = childSnapshot.val();
-  				//Time to check the repay date, against today's date.
-	  			 var repayDate = new Date(childData.repayDate.time).toLocaleDateString("en-US");
-	  			 var todaysDate = new Date().toLocaleDateString("en-US");
-	  			 if(repayDate.valueOf() != todaysDate.valueOf()){
-	  			 	console.log(repayDate.valueOf() + " " + todaysDate.valueOf());
-	  			 }
-			      // key will be "ada" the first time and "alan" the second time
-			      //var key = childSnapshot.key;
-			      // childData will be the actual contents of the child
-			      //res.json(childData);
-  				  
-			  });
+  				 var key = childSnapshot.key;
+  				 //Make sure the terms agreement has been accepted before going forward 
+  				 if(childData.accepted == true){
+	  				//Time to check the repay date, against today's date.
+		  			 var repayDate = new Date(childData.repayDate.time).toLocaleDateString("en-US");
+		  			 var todaysDate = new Date().toLocaleDateString("en-US");
 
-  		//}else{
-  			//The terms agreement hasn't been accepted yet 
-  			//Do nothing 
-  		//}
-	});
-	//res.json(["Tony","Lisa","Michael","Ginger","Food"]);
+		  			 if(repayDate.valueOf() == todaysDate.valueOf()){
+		  			 	//The repayDate is the same as today's date! Charge them! 
+							var centAmount = childData.repayAmount * 100;
+							var customer = null;
+
+							var refUsers = db.ref("users/"+childData.borrowerUserId);
+
+							//Step 1. check the DB to see if the user already has a customer ID on file 
+						   refUsers.on("value", function(snapshot) {
+								var user = snapshot.val();
+								var stripeToken = user.stripeToken;
+								var userEmail = user.email;
+								if(user.customerId == null){
+									//Current user, does not have a customer id... we need to create a customer object for them 
+									stripe.customers.create({
+										 	    source: stripeToken,
+										 	    email: userEmail
+										 	 }, function(err, customer) {
+											  // asynchronously called
+											  	//As long as the newly created customer object is not null, we can go ahead with the charge
+											  	if(customer != null){
+											  	   var customer =  customer;
+											 	   var charge = stripe.charges.create({
+												        amount: centAmount,
+												     	currency: 'usd',
+												     	customer: customer.id
+												     }, 
+												     function(err, charge) {
+												         if (err && err.type === 'StripeCardError') {
+												             console.log("The card has been declined");
+												             //Add code to change repay date to tomorrow 
+												            
+												         }else if(err){
+												         	console.log("an error on line 197 " + err);
+															//Add code to change repay date to tomorrow 
+
+												         }else{
+												         	console.log("Charged");
+												         }
+												     });
+
+											 	//Also need to set the new customerId value in the DB 
+											 	refUsers.child("customerId").set(customer.id);
+											 	console.log("Request is processing... creating new customer and sending the charge")
+
+											 	}else{
+											 		res.write("error line 212 " + err);
+											 	}
+											});
+								}else if(user.customerId != null){
+									//The user already has a customer Id saved in the DB... just retreive that and create a charge 
+									stripe.customers.retrieve(
+									  user.customerId,
+									  function(err, customer) {
+									    // asynchronously called
+									    if(customer != null){
+									    	//we've got the customer using the existing customer id 
+									    	//Now just charge them 
+									    	var charge = stripe.charges.create({
+												        amount: centAmount,
+												     	currency: 'usd',
+												     	customer: customer.id
+												     }, 
+												     function(err, charge) {
+												         if (err && err.type === 'StripeCardError') {
+												             console.log("The card has been declined");
+												           	//Add code to change repay date to tomorrow 
+												            
+												         }else if(err){
+												         	console.log("an error on line 108 " + err);
+															//Add code to change repay date to tomorrow 
+												         }else{
+												         	console.log("Charged");
+												         }
+												     });
+									    	console.log("Request is processing... using the existing customer id to create a charge.")
+									    }else{ 
+									    	res.write("error line 243 " + err);
+									    }
+									  }
+									);
+								}
+							
+							}, function (err, errorObject) {
+								console.log("The read failed: " + errorObject.code);
+								res.send(errorObject.code);
+							});
+		  			 
+
+		  			 	console.log(repayDate.valueOf() + " same as " + todaysDate.valueOf());
+		  			 }else{
+		  			 	//The repay date is NOT today... leave the terms agreement alone 
+		  			 	console.log(repayDate.valueOf() + " not the same date as " + todaysDate.valueOf());
+		  			 }
+				  
+			  }else{
+			  	//Terms agreement hasn't been accepted yet... leave it alone 
+			  }
+
+  			}
+		});
+
+	console.log("Daily job ran");
+});
+
+app.get("/", ( req, res, next) => {
+	res.json(["Tony","Lisa","Michael","Ginger","Food"]);
 });
 
 app.listen(3000, () => {
