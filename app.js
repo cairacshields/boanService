@@ -179,7 +179,7 @@ app.get("/", ( req, res, next) => {
 			      //var key = childSnapshot.key;
 			      // childData will be the actual contents of the child
 			      var childData = childSnapshot.val();
-			      res.json(childData);
+			      //res.json(childData);
   				  console.log(childData);
 			  });
 
