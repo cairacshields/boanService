@@ -174,8 +174,14 @@ app.get("/", ( req, res, next) => {
   			//Time to check the repay date, against today's date.
   			//var miliDate = new Date(data.repayDate.getTime());
   			//var repayDate = new Date(data.repayDate.time);
-  			res.json(data.child());
-  			console.log(data.child());
+  			data.forEach(function(childSnapshot) {
+			      // key will be "ada" the first time and "alan" the second time
+			      //var key = childSnapshot.key;
+			      // childData will be the actual contents of the child
+			      var childData = childSnapshot.val();
+			      res.json(childData);
+  				  console.log(childData);
+			  });
 
   		//}else{
   			//The terms agreement hasn't been accepted yet 
