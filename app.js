@@ -175,7 +175,7 @@ app.get("/", ( req, res, next) => {
   			//var miliDate = new Date(data.repayDate.getTime());
   			//var repayDate = new Date(data.repayDate.time);
   			res.json(prevChildKey);
-  			console.log(data.val());
+  			console.log(prevChildKey);
 
   		//}else{
   			//The terms agreement hasn't been accepted yet 
