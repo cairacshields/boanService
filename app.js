@@ -147,16 +147,40 @@ schedule.scheduleJob('0 1 * * *', function(){
 	//So in here we need to start by grabbing the correct DB reference. 
 	var refTermsAgreements = db.ref("termsAgreements");
 
+	//This is going to use the DB reference to grab each termsAgreement once. Inside here, we can check the 'accepted' value
+	refTermsAgreements.once("value", function(data) {
+  		if(data.accepted != false){
+  			//The terms agreement has been accepted and the lender was charged. 
+  			//Time to check the repay date, against today's date.
+  			var repayDate = new Date(data.repayDate);
+
+
+  		}else{
+  			//The terms agreement hasn't been accepted yet 
+  			//Do nothing 
+  		}
+	});
+
 
 });
 
 app.get("/", ( req, res, next) => {
 	var refTermsAgreements = db.ref("termsAgreements");
 
+	//This is going to use the DB reference to grab each termsAgreement once. Inside here, we can check the 'accepted' value
 	refTermsAgreements.once("value", function(data) {
-  		res.json(data)
+  		//if(data.accepted != false){
+  			//The terms agreement has been accepted and the lender was charged. 
+  			//Time to check the repay date, against today's date.
+  			var repayDate = new Date(data.repayDate);
+  			res.write(repayDate);
+
+  		//}else{
+  			//The terms agreement hasn't been accepted yet 
+  			//Do nothing 
+  		//}
 	});
- //res.json(["Tony","Lisa","Michael","Ginger","Food"]);
+	res.json(["Tony","Lisa","Michael","Ginger","Food"]);
 });
 
 app.listen(3000, () => {
