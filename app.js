@@ -74,6 +74,7 @@ app.post("/charge", function(req, res){
 
 					 	//Also need to set the new customerId value in the DB 
 					 	refUsers.child("customerId").set(customer.id);
+					 	console.log("Request is processing... creating new customer and sending the charge")
 					 	res.send("Request is processing... creating new customer and sending the charge");
 
 					 	}else{
@@ -103,6 +104,7 @@ app.post("/charge", function(req, res){
 									res.write("The card has been declined" + err)
 						         }
 						     });
+			    	console.log("Request is processing... using the existing customer id to create a charge.")
 			    	res.send("Request is processing... using the existing customer id to create a charge.");
 			    }else{ 
 			    	res.write("error line 107 " + err);
