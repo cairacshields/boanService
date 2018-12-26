@@ -113,7 +113,7 @@ app.post("/charge", function(req, res){
 									res.write("The card has been declined" + err)
 						         }else{
 						         	console.log("Something is up... " + user.customerId);
-						         	res.send({statusMessage = "Charge results " + charge});
+						         	res.send({statusMessage : "Charge results " + charge});
 						         }
 						     });
 			    	console.log("Request is processing... using the existing customer id to create a charge.")
