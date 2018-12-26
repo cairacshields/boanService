@@ -110,7 +110,7 @@ app.post("/charge", function(req, res){
 						         	console.log("an error on line 108 " + err);
 									res.write("The card has been declined" + err)
 						         }else{
-						         	console.log("Something is up... " + charge);
+						         	console.log("Something is up... " + charge.amount);
 						         	//res.send("Charge results " + charge);
 						         }
 						     });
