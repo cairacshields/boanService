@@ -158,7 +158,8 @@ app.post("/connectExpress", function(req, res){
 	 	}else if(httpResponse){
 	 		var parsedBody = JSON.parse(body);
 	 		console.log("Response " + body);
-	 		res.status(201).send(parsedBody);
+	 		res.status(201);
+	 		res.body(parsedBody);
 
 	 		refUsers.child("stripe_user_id").set(parsedBody.stripe_user_id);
 
