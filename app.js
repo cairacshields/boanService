@@ -142,7 +142,12 @@ app.post("/connectExpress", function(req, res){
 
 	var refUsers = db.ref("users/"+userId);
 
-	request.post({url:'https://connect.stripe.com/oauth/token', headers: {"Content-Type": "application/json"} ,form: {
+	request.post({url:'https://connect.stripe.com/oauth/token', headers: [
+        {
+          name: 'content-type',
+          value: 'application/x-www-form-urlencoded'
+        }
+      ] ,form: {
 		"client_secret":'sk_test_km8Vo3mjUEOtkU2SaizC6QmR',
 		"code": code,
 		"grant_type": "authorization_code"
