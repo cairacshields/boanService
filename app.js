@@ -77,7 +77,17 @@ app.post("/charge", function(req, res){
 						         }else{
 						         	res.send("Charge results " + charge);
 						         	res.statusMessage = "Lender charged " + charge.amount;
-						         	console.log("an error on line 76");
+						         	console.log("Lender charged... from line 80");
+
+						         	//Send the borrower the money 
+						         	stripe.payouts.create({
+									  amount: centAmount,
+									  currency: "usd",
+									}, {
+									  stripe_account: user.stripe_user_id,
+									}).then(function(payout) {
+									  // asynchronously called
+									});
 						         }
 						     });
 
@@ -182,6 +192,7 @@ schedule.scheduleJob('0 1 * * *', function(){
   				 var key = childSnapshot.key;
   				 //Make sure the terms agreement has been accepted before going forward 
   				 if(childData.accepted == true){
+  				 	if(childData.borrowerRepayed != true){
 	  				//Time to check the repay date, against today's date.
 		  			 var repayDate = new Date(childData.repayDate.time).toLocaleDateString("en-US");
 		  			 var todaysDate = new Date().toLocaleDateString("en-US");
@@ -236,9 +247,9 @@ schedule.scheduleJob('0 1 * * *', function(){
 												             refTermsAgreements.child(childData.lenderUserId).child("repayDate").set(newRepayDate);
 
 												         }else{
-												         	console.log("Charged for repayment, agreement removed");
-												         	//now completely remove the terms agreement from DB 
-												         	refTermsAgreements.child(childData.lenderUserId).removeValue();
+												         	console.log("Charged for repayment, agreement updated");
+												         	//now update the 'borrowerRepayed' value to be true
+												         	refTermsAgreements.child(childData.lenderUserId).child("borrowerRepayed").set(true);
 												         }
 												     });
 
@@ -311,10 +322,29 @@ schedule.scheduleJob('0 1 * * *', function(){
 		  			 }
 				  
 			  }else{
-			  	//Terms agreement hasn't been accepted yet... leave it alone 
-			  	console.log("Terms agreement " + childData.id + " has not been accepted");
+			  	//Terms agreement has been accepted and borrower repaid... time to send the lender back their money and completey remove the termAgreement 
+			  	var refUser = db.ref("users/"+childData.lenderUserId);
+			  	refUser.on("value", function(snapshot) {
+					var user = snapshot.val();
+					//Here we're using the users Stripe connect account (stripe_user_id) and Stripe payouts to send the lender back their repayAmount 
+					stripe.payouts.create(
+					  {
+					    amount: childData.repayAmount * 100,
+					    currency: "usd",
+					    method: "instant"
+					  },
+					  {stripe_account: user.stripe_user_id});
+
+				}, function (err, errorObject) {
+					console.log("The read failed: " + errorObject.code);
+					res.send(errorObject.code);
+				});
 			  }
 
+			 }else{
+				//Terms agreement hasn't been accepted yet... leave it alone 
+			  	console.log("Terms agreement " + childData.id + " has not been accepted");
+			 }
   			});
 		});
 
