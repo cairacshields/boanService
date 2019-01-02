@@ -6,6 +6,7 @@ var express = require("express"),
  	admin = require('firebase-admin'),
  	serviceAccount = require('./serviceAccountKey.json'),
  	schedule = require('node-schedule'),
+ 	request = require('request'),
 	app = express();
 
 //App configurations below
@@ -133,6 +134,25 @@ app.post("/charge", function(req, res){
 	});
 	  
  });   
+
+
+app.post("/connectExpress", function(req, res){
+	var code = req.body.code;
+
+	request.post({url:'https://connect.stripe.com/oauth/token', form: {
+		"client_secret":'sk_test_km8Vo3mjUEOtkU2SaizC6QmR',
+		"code": code,
+		"grant_type": "authorization_code"
+	}}, function(err,httpResponse,body){
+	 	if(err){
+	 		console.log(err +" "+ body);
+	 		res.send(err +" "+ body);
+	 	}else if(httpResponse){
+	 		console.log("Response " + httpResponse +" "+ body);
+	 		res.send("Response " + httpResponse +" "+ body);
+	 	}
+	});
+});
 
 //Also need to create a function that will run once every day to check for scheduled payments.
 // Step 1. Using node-schedule, we create a job that will run once every day 
@@ -285,6 +305,7 @@ schedule.scheduleJob('0 1 * * *', function(){
 				  
 			  }else{
 			  	//Terms agreement hasn't been accepted yet... leave it alone 
+			  	console.log("Terms agreement " childData.id + " has not been accepted");
 			  }
 
   			});
