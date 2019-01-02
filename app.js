@@ -75,8 +75,7 @@ app.post("/charge", function(req, res){
 						         	console.log("an error on line 72 " + err);
 									res.write("The card has been declined" + err)
 						         }else{
-						         	res.send("Charge results " + charge);
-						         	res.statusMessage = "Lender charged " + charge.amount;
+						      
 						         	console.log("Lender charged... from line 80");
 
 						         	//Send the borrower the money 
@@ -87,7 +86,11 @@ app.post("/charge", function(req, res){
 									  stripe_account: user.stripe_user_id,
 									}).then(function(payout) {
 									  // asynchronously called
+									  console.log(payout);
+
 									});
+									res.send("Charge results " + charge);
+						         	res.statusMessage = "Lender charged " + charge.amount;
 						         }
 						     });
 
