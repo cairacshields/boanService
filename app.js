@@ -41,10 +41,12 @@ app.post("/charge", function(req, res){
 	var stripeToken = req.body.stripeToken;
 	var userEmail = req.body.email;
 	var userId = req.body.userId;
+	var borrowerUserId = req.body.borrowerUserId;
 	var centAmount = req.body.amount;
 	var customer = null;
 
 	var refUsers = db.ref("users/"+userId);
+	vaf refBorrowingUser = db.ref("users/"+borrowerUserId);
 
 	//Step 1. check the DB to see if the user already has a customer ID on file 
    refUsers.on("value", function(snapshot) {
@@ -78,17 +80,21 @@ app.post("/charge", function(req, res){
 						      
 						         	console.log("Lender charged... from line 80");
 
-						         	//Send the borrower the money 
-						         	stripe.payouts.create({
-									  amount: centAmount,
-									  currency: "usd",
-									}, {
-									  stripe_account: user.stripe_user_id,
-									}).then(function(payout) {
-									  // asynchronously called
-									  console.log(payout);
+						         	refBorrowingUser.once("value", function(snapshot){
+						         		var borrowingUser = snapshot.val();
+						         		//Send the borrower the money 
+							         	stripe.payouts.create({
+										  amount: centAmount,
+										  currency: "usd",
+										}, {
+										  stripe_account: borrowingUser.stripe_user_id,
+										}).then(function(payout) {
+										  // asynchronously called
+										  console.log(payout);
 
-									});
+										});
+						         	});
+						         
 									res.send("Charge results " + charge);
 						         	res.statusMessage = "Lender charged " + charge.amount;
 						         }
@@ -128,6 +134,20 @@ app.post("/charge", function(req, res){
 									res.write("The card has been declined" + err)
 						         }else{
 						         	console.log("Something is up... " + user.customerId);
+						         	refBorrowingUser.once("value", function(snapshot){
+						         		var borrowingUser = snapshot.val();
+						         		//Send the borrower the money 
+							         	stripe.payouts.create({
+										  amount: centAmount,
+										  currency: "usd",
+										}, {
+										  stripe_account: borrowingUser.stripe_user_id,
+										}).then(function(payout) {
+										  // asynchronously called
+										  console.log(payout);
+
+										});
+						         	});
 						         	res.send({statusMessage : "Charge results " + charge});
 
 						         }
