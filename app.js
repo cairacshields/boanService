@@ -46,7 +46,7 @@ app.post("/charge", function(req, res){
 	var customer = null;
 
 	var refUsers = db.ref("users/"+userId);
-	vaf refBorrowingUser = db.ref("users/"+borrowerUserId);
+	var refBorrowingUser = db.ref("users/"+borrowerUserId);
 
 	//Step 1. check the DB to see if the user already has a customer ID on file 
    refUsers.on("value", function(snapshot) {
