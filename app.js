@@ -156,8 +156,9 @@ app.post("/connectExpress", function(req, res){
 	 		console.log(err +" "+ body);
 	 		res.send(err +" "+ body);
 	 	}else if(httpResponse){
+
+	 		console.log("Response " + JSON.parse(body).stripe_user_id);
 	 		console.log("Response " + body);
-	 		console.log("Response " + res.body);
 	 		console.log("User Id: " + httpResponse.body.stripe_user_id);
 	 		console.log("User Id: " + body.stripe_user_id);
 	 		res.send("Response " + httpResponse +" "+ body);
