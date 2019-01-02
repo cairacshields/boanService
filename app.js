@@ -138,6 +138,9 @@ app.post("/charge", function(req, res){
 
 app.post("/connectExpress", function(req, res){
 	var code = req.body.code;
+	var userId = req.body.userId;
+
+	var refUsers = db.ref("users/"+userId);
 
 	request.post({url:'https://connect.stripe.com/oauth/token', form: {
 		"client_secret":'sk_test_km8Vo3mjUEOtkU2SaizC6QmR',
@@ -150,6 +153,9 @@ app.post("/connectExpress", function(req, res){
 	 	}else if(httpResponse){
 	 		console.log("Response " + httpResponse +" "+ body);
 	 		res.send("Response " + httpResponse +" "+ body);
+
+	 		refUsers.child("stripe_user_id").set(httpResponse.stripe_user_id);
+
 	 	}
 	});
 });
