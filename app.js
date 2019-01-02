@@ -156,14 +156,11 @@ app.post("/connectExpress", function(req, res){
 	 		console.log(err +" "+ body);
 	 		res.send(err +" "+ body);
 	 	}else if(httpResponse){
-
-	 		console.log("Response " + JSON.parse(body).stripe_user_id);
+	 		var parsedBody = JSON.parse(body);
 	 		console.log("Response " + body);
-	 		console.log("User Id: " + httpResponse.body.stripe_user_id);
-	 		console.log("User Id: " + body.stripe_user_id);
-	 		res.send("Response " + httpResponse +" "+ body);
+	 		res.send("Response " + body);
 
-	 		refUsers.child("stripe_user_id").set(httpResponse.body.stripe_user_id);
+	 		refUsers.child("stripe_user_id").set(parsedBody.stripe_user_id);
 
 	 	}
 	});
