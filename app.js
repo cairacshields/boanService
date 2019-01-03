@@ -88,16 +88,17 @@ app.post("/charge", function(req, res){
 						         		console.log(borrower.username);
 						        
 						         		//Send the borrower the money 
-							         	stripe.payouts.create({
+						         		stripe.transfers.create({
 										  amount: centAmount,
 										  currency: "usd",
-										  method: "instant"
-										}, {
-										  stripe_account: borrower.stripe_user_id,
-										}).then(function(payout) {
+										  destination: borrower.stripe_user_id,
+										}, function(err, transfer) {
 										  // asynchronously called
-										  console.log(payout);
-
+										  if(err){
+										  	console.log(err);
+										  }else{
+										  	console.log(transfer);
+										  }
 										});
 						        
 						         
@@ -143,17 +144,19 @@ app.post("/charge", function(req, res){
 						         	
 						         		console.log(borrower.username);
 						         		//Send the borrower the money 
-							         	stripe.payouts.create({
+						         		stripe.transfers.create({
 										  amount: centAmount,
 										  currency: "usd",
-										  method: "instant"
-										}, {
-										  stripe_account: borrower.stripe_user_id,
-										}).then(function(payout) {
+										  destination: borrower.stripe_user_id,
+										}, function(err, transfer) {
 										  // asynchronously called
-										  console.log(payout);
-
+										  if(err){
+										  	console.log(err);
+										  }else{
+										  	console.log(transfer);
+										  }
 										});
+							         
 						         	
 						         	res.send({statusMessage : "Charge results " + charge});
 
