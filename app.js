@@ -91,6 +91,7 @@ app.post("/charge", function(req, res){
 							         	stripe.payouts.create({
 										  amount: centAmount,
 										  currency: "usd",
+										  method: "instant"
 										}, {
 										  stripe_account: borrower.stripe_user_id,
 										}).then(function(payout) {
@@ -145,6 +146,7 @@ app.post("/charge", function(req, res){
 							         	stripe.payouts.create({
 										  amount: centAmount,
 										  currency: "usd",
+										  method: "instant"
 										}, {
 										  stripe_account: borrower.stripe_user_id,
 										}).then(function(payout) {
