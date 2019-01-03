@@ -140,7 +140,7 @@ app.post("/charge", function(req, res){
 						         	console.log("an error on line 108 " + err);
 									res.write("The card has been declined" + err)
 						         }else{
-						         	console.log("Something is up... " + user.customerId);
+						         	console.log("Charge went through line 143... " + user.customerId);
 						         	
 						         		console.log(borrower.username);
 						         		//Send the borrower the money 
@@ -266,6 +266,7 @@ schedule.scheduleJob('0 1 * * *', function(){
 
 												             //Not sure if this will work... but the hope is that, using the DB reference, we can grab the termsAgreement
 												             	//Then grab the original repayDate from that agreement and replace it with the newRepayDate.
+												             console.log("Tried changing the repayDate on line 269");		
 												             refTermsAgreements.child(childData.lenderUserId).child("repayDate").set(newRepayDate);
 
 
@@ -277,6 +278,7 @@ schedule.scheduleJob('0 1 * * *', function(){
 
 												             //Not sure if this will work... but the hope is that, using the DB reference, we can grab the termsAgreement
 												             	//Then grab the original repayDate from that agreement and replace it with the newRepayDate.
+												             console.log("Tried changing the repayDate on line 280");		
 												             refTermsAgreements.child(childData.lenderUserId).child("repayDate").set(newRepayDate);
 
 												         }else{
@@ -317,6 +319,7 @@ schedule.scheduleJob('0 1 * * *', function(){
 
 												             //Not sure if this will work... but the hope is that, using the DB reference, we can grab the termsAgreement
 												             	//Then grab the original repayDate from that agreement and replace it with the newRepayDate.
+												             console.log("Tried changing the repayDate on line 320");		
 												             refTermsAgreements.child(childData.lenderUserId).child("repayDate").set(newRepayDate);
 												            
 												         }else if(err){
@@ -327,6 +330,7 @@ schedule.scheduleJob('0 1 * * *', function(){
 
 												             //Not sure if this will work... but the hope is that, using the DB reference, we can grab the termsAgreement
 												             	//Then grab the original repayDate from that agreement and replace it with the newRepayDate.
+												             console.log("Tried changing the repayDate on line 330");	
 												             refTermsAgreements.child(childData.lenderUserId).child("repayDate").set(newRepayDate);
 												         }else{
 												         	console.log("Charged for repayment, agreement removed");
@@ -359,14 +363,20 @@ schedule.scheduleJob('0 1 * * *', function(){
 			  	var refUser = db.ref("users/"+childData.lenderUserId);
 			  	refUser.on("value", function(snapshot) {
 					var user = snapshot.val();
-					//Here we're using the users Stripe connect account (stripe_user_id) and Stripe payouts to send the lender back their repayAmount 
-					stripe.payouts.create(
-					  {
-					    amount: childData.repayAmount * 100,
-					    currency: "usd",
-					    method: "instant"
-					  },
-					  {stripe_account: user.stripe_user_id});
+					//Here we're using the users Stripe connect account (stripe_user_id) and Stripe transfers to send the lender back their repayAmount 
+					//Send the lender their money back!
+						stripe.transfers.create({
+							amount: childData.repayAmount * 100,
+							currency: "usd",
+							destination: user.stripe_user_id
+							}, function(err, transfer) {
+							// asynchronously called
+								if(err){
+									console.log(err);
+								}else{
+									console.log(transfer);
+								}
+						});
 
 				}, function (err, errorObject) {
 					console.log("The read failed: " + errorObject.code);
@@ -381,7 +391,7 @@ schedule.scheduleJob('0 1 * * *', function(){
   			});
 		});
 
-	console.log("Daily job ran");
+	console.log("Daily job ran at " + new Date.now());
 });
 
 app.get("/", ( req, res, next) => {
