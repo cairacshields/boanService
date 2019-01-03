@@ -91,7 +91,7 @@ app.post("/charge", function(req, res){
 						         		stripe.transfers.create({
 										  amount: centAmount,
 										  currency: "usd",
-										  destination: borrower.stripe_user_id,
+										  destination: borrower.stripe_user_id
 										}, function(err, transfer) {
 										  // asynchronously called
 										  if(err){
@@ -147,7 +147,7 @@ app.post("/charge", function(req, res){
 						         		stripe.transfers.create({
 										  amount: centAmount,
 										  currency: "usd",
-										  destination: borrower.stripe_user_id,
+										  destination: borrower.stripe_user_id
 										}, function(err, transfer) {
 										  // asynchronously called
 										  if(err){
