@@ -43,10 +43,15 @@ app.post("/charge", function(req, res){
 	var userId = req.body.userId;
 	var borrowerUserId = req.body.borrowerUserId;
 	var centAmount = req.body.amount;
+	var borrower = null;
 	var customer = null;
 
 	var refUsers = db.ref("users/"+userId);
 	var refBorrowingUser = db.ref("users/"+borrowerUserId);
+
+	refBorrowingUser.once("value", function(snapshot){
+		 borrower = snapshot.val();
+	});
 
 	//Step 1. check the DB to see if the user already has a customer ID on file 
    refUsers.on("value", function(snapshot) {
@@ -80,20 +85,20 @@ app.post("/charge", function(req, res){
 						      
 						         	console.log("Lender charged... from line 80");
 
-						         	refBorrowingUser.once("value", function(snapshot){
-						         		var borrowingUser = snapshot.val();
+						         		console.log(borrower.username);
+						        
 						         		//Send the borrower the money 
 							         	stripe.payouts.create({
 										  amount: centAmount,
 										  currency: "usd",
 										}, {
-										  stripe_account: borrowingUser.stripe_user_id,
+										  stripe_account: borrower.stripe_user_id,
 										}).then(function(payout) {
 										  // asynchronously called
 										  console.log(payout);
 
 										});
-						         	});
+						        
 						         
 									res.send("Charge results " + charge);
 						         	res.statusMessage = "Lender charged " + charge.amount;
@@ -134,20 +139,20 @@ app.post("/charge", function(req, res){
 									res.write("The card has been declined" + err)
 						         }else{
 						         	console.log("Something is up... " + user.customerId);
-						         	refBorrowingUser.once("value", function(snapshot){
-						         		var borrowingUser = snapshot.val();
+						         	
+						         		console.log(borrower.username);
 						         		//Send the borrower the money 
 							         	stripe.payouts.create({
 										  amount: centAmount,
 										  currency: "usd",
 										}, {
-										  stripe_account: borrowingUser.stripe_user_id,
+										  stripe_account: borrower.stripe_user_id,
 										}).then(function(payout) {
 										  // asynchronously called
 										  console.log(payout);
 
 										});
-						         	});
+						         	
 						         	res.send({statusMessage : "Charge results " + charge});
 
 						         }
