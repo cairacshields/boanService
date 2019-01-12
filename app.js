@@ -391,7 +391,7 @@ schedule.scheduleJob('0 1 * * *', function(){
   			});
 		});
 
-	console.log("Daily job ran at " + new Date.now());
+	console.log("Daily job ran at " + Date.now());
 });
 
 app.get("/", ( req, res, next) => {
