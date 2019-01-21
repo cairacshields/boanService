@@ -7,6 +7,7 @@ var express = require("express"),
  	serviceAccount = require('./serviceAccountKey.json'),
  	schedule = require('node-schedule'),
  	request = require('request'),
+ 	dateFormat = require('dateformat'),
 	app = express();
 
 //App configurations below
@@ -402,7 +403,8 @@ schedule.scheduleJob('0 1 * * *', function(){
   			});
 		});
 
-	console.log("Daily job ran at " + Date.now());
+	console.log("Daily job ran at " + dateFormat(new Date(), "ddd mmm dd yyyy HH:MM:ss UTC" ));
+	//console.log("Daily job ran at " + Date.now());
 });
 
 app.get("/", ( req, res, next) => {
