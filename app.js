@@ -141,7 +141,7 @@ app.post("/charge", function(req, res){
 						             res.send({statusMessage : "There was an error " + err});
 						            
 						         }else if(err){
-						         	console.log("an error on line 108 " + err + " " + newAmount);
+						         	console.log("an error on line 108 " + err + " " + newAmount + " ," + centAmount + " ," + fee);
 									res.write("The card has been declined" + err)
 						         }else{
 						         	console.log("Charge went through line 143... " + user.customerId);
