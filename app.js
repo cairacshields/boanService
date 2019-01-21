@@ -43,6 +43,7 @@ app.post("/charge", function(req, res){
 	var userId = req.body.userId;
 	var borrowerUserId = req.body.borrowerUserId;
 	var centAmount = req.body.amount;
+	var fee = req.body.fee;
 	var borrower = null;
 	var customer = null;
 
@@ -67,7 +68,7 @@ app.post("/charge", function(req, res){
 					  	if(customer != null){
 					  	   var customer =  customer;
 					 	   var charge = stripe.charges.create({
-						        amount: centAmount,
+						        amount: centAmount+fee,
 						     	currency: 'usd',
 						     	customer: customer.id
 						     }, 
@@ -110,8 +111,6 @@ app.post("/charge", function(req, res){
 					 	//Also need to set the new customerId value in the DB 
 					 	refUsers.child("customerId").set(customer.id);
 					 	console.log("Request is processing... creating new customer and sending the charge")
-					 	// res.send("Request is processing... creating new customer and sending the charge");
-
 					 	}else{
 					 		res.write("error line 79 " + err);
 					 	}
@@ -126,7 +125,7 @@ app.post("/charge", function(req, res){
 			    	//we've got the customer using the existing customer id 
 			    	//Now just charge them 
 			    	var charge = stripe.charges.create({
-						        amount: centAmount,
+						        amount: centAmount+fee,
 						     	currency: 'usd',
 						     	customer: customer.id
 						     }, 
@@ -233,6 +232,7 @@ schedule.scheduleJob('0 1 * * *', function(){
 		  			 if(repayDate.valueOf() == todaysDate.valueOf()){
 		  			 	//The repayDate is the same as today's date! Charge them! 
 							var centAmount = childData.repayAmount * 100;
+							var fee = childData.fee;
 							var customer = null;
 
 							var refUsers = db.ref("users/"+childData.borrowerUserId);
@@ -253,7 +253,7 @@ schedule.scheduleJob('0 1 * * *', function(){
 											  	if(customer != null){
 											  	   var customer =  customer;
 											 	   var charge = stripe.charges.create({
-												        amount: centAmount,
+												        amount: centAmount + fee,
 												     	currency: 'usd',
 												     	customer: customer.id
 												     }, 
@@ -285,6 +285,7 @@ schedule.scheduleJob('0 1 * * *', function(){
 												         	console.log("Charged for repayment, agreement updated");
 												         	//now update the 'borrowerRepayed' value to be true
 												         	refTermsAgreements.child(childData.lenderUserId).child("borrowerRepayed").set(true);
+												         	refUsers.child("hasActiveBorrowRequest").set(false);
 												         }
 												     });
 
@@ -306,7 +307,7 @@ schedule.scheduleJob('0 1 * * *', function(){
 									    	//we've got the customer using the existing customer id 
 									    	//Now just charge them 
 									    	var charge = stripe.charges.create({
-												        amount: centAmount,
+												        amount: centAmount + fee,
 												     	currency: 'usd',
 												     	customer: customer.id
 												     }, 
@@ -335,7 +336,8 @@ schedule.scheduleJob('0 1 * * *', function(){
 												         }else{
 												         	console.log("Charged for repayment, agreement removed");
 												         	//now completely remove the terms agreement from DB 
-												         	refTermsAgreements.child(childData.lenderUserId).removeValue();
+												         	refTermsAgreements.child(childData.lenderUserId).child("borrowerRepayed").set(true);
+												         	refUsers.child("hasActiveBorrowRequest").set(false);
 												         }
 												     });
 									    	console.log("Request is processing... using the existing customer id to create a charge.")
@@ -374,7 +376,9 @@ schedule.scheduleJob('0 1 * * *', function(){
 								if(err){
 									console.log(err);
 								}else{
+									//Transfer seems to have went through, so remove the terms agreement here
 									console.log(transfer);
+									refTermsAgreements.child(childData.lenderUserId).removeValue();
 								}
 						});
 
