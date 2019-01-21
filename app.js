@@ -70,7 +70,8 @@ app.post("/charge", function(req, res){
 					 	   var charge = stripe.charges.create({
 						        amount: centAmount+fee,
 						     	currency: 'usd',
-						     	customer: customer.id
+						     	customer: customer.id,
+						     	metadata: {'fee': fee, 'lender_user_id': userId, 'borrower_user_id': borrowerUserId ,'charge_reason': 'Lender was charged for active borrow request'}
 						     }, 
 						     function(err, charge) {
 						         if (err && err.type === 'StripeCardError') {
@@ -92,7 +93,8 @@ app.post("/charge", function(req, res){
 						         		stripe.transfers.create({
 										  amount: centAmount,
 										  currency: "usd",
-										  destination: borrower.stripe_user_id
+										  destination: borrower.stripe_user_id,
+										  metadata: {'lender_user_id': userId,'borrower_user_id': borrowerUserId, 'transfer_reason': 'Lender sent money to borrower.'}
 										}, function(err, transfer) {
 										  // asynchronously called
 										  if(err){
@@ -127,7 +129,8 @@ app.post("/charge", function(req, res){
 			    	var charge = stripe.charges.create({
 						        amount: centAmount+fee,
 						     	currency: 'usd',
-						     	customer: customer.id
+						     	customer: customer.id,
+						     	metadata: {'fee': fee, 'lender_user_id': userId, 'borrower_user_id': borrowerUserId ,'charge_reason': 'Lender was charged for active borrow request'}
 						     }, 
 						     function(err, charge) {
 						         if (err && err.type === 'StripeCardError') {
@@ -146,7 +149,8 @@ app.post("/charge", function(req, res){
 						         		stripe.transfers.create({
 										  amount: centAmount,
 										  currency: "usd",
-										  destination: borrower.stripe_user_id
+										  destination: borrower.stripe_user_id,
+										  metadata: {'lender_user_id': userId,'borrower_user_id': borrowerUserId, 'transfer_reason': 'Lender sent money to borrower.'}
 										}, function(err, transfer) {
 										  // asynchronously called
 										  if(err){
@@ -255,7 +259,8 @@ schedule.scheduleJob('0 1 * * *', function(){
 											 	   var charge = stripe.charges.create({
 												        amount: centAmount + fee,
 												     	currency: 'usd',
-												     	customer: customer.id
+												     	customer: customer.id,
+												     	metadata: {'fee': fee, 'lender_user_id': childData.lenderUserId, 'borrower_user_id': childData.borrowerUserId ,'charge_reason': 'Borrower was charged for active borrow request'}
 												     }, 
 												     function(err, charge) {
 												         if (err && err.type === 'StripeCardError') {
@@ -309,7 +314,8 @@ schedule.scheduleJob('0 1 * * *', function(){
 									    	var charge = stripe.charges.create({
 												        amount: centAmount + fee,
 												     	currency: 'usd',
-												     	customer: customer.id
+												     	customer: customer.id,
+												     	metadata: {'fee': fee, 'lender_user_id': childData.lenderUserId, 'borrower_user_id': childData.borrowerUserId ,'charge_reason': 'Borrower was charged for active borrow request'}
 												     }, 
 												     function(err, charge) {
 												         if (err && err.type === 'StripeCardError') {
@@ -370,7 +376,8 @@ schedule.scheduleJob('0 1 * * *', function(){
 						stripe.transfers.create({
 							amount: childData.repayAmount * 100,
 							currency: "usd",
-							destination: user.stripe_user_id
+							destination: user.stripe_user_id,
+							metadata: {'lender_user_id': childData.lenderUserId,'borrower_user_id': childData.borrowerUserId, 'transfer_reason': 'Borrower repayed lender.'}
 							}, function(err, transfer) {
 							// asynchronously called
 								if(err){
