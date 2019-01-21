@@ -127,8 +127,9 @@ app.post("/charge", function(req, res){
 			    if(customer != null){
 			    	//we've got the customer using the existing customer id 
 			    	//Now just charge them 
+			    	var newAmount = centAmount + fee;
 			    	var charge = stripe.charges.create({
-						        amount: centAmount+fee,
+						        amount: newAmount,
 						     	currency: 'usd',
 						     	customer: customer.id,
 						     	metadata: {'fee': fee, 'lender_user_id': userId, 'borrower_user_id': borrowerUserId ,'charge_reason': 'Lender was charged for active borrow request'}
@@ -140,7 +141,7 @@ app.post("/charge", function(req, res){
 						             res.send({statusMessage : "There was an error " + err});
 						            
 						         }else if(err){
-						         	console.log("an error on line 108 " + err);
+						         	console.log("an error on line 108 " + err + " " + newAmount);
 									res.write("The card has been declined" + err)
 						         }else{
 						         	console.log("Charge went through line 143... " + user.customerId);
