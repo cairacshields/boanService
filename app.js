@@ -66,10 +66,11 @@ app.post("/charge", function(req, res){
 				 	 }, function(err, customer) {
 					  // asynchronously called
 					  	//As long as the newly created customer object is not null, we can go ahead with the charge
+					  	var newAmount = centAmount + fee;
 					  	if(customer != null){
 					  	   var customer =  customer;
 					 	   var charge = stripe.charges.create({
-						        amount: centAmount+fee,
+						        amount: newAmount,
 						     	currency: 'usd',
 						     	customer: customer.id,
 						     	metadata: {'fee': fee, 'lender_user_id': userId, 'borrower_user_id': borrowerUserId ,'charge_reason': 'Lender was charged for active borrow request'}
@@ -220,6 +221,32 @@ app.post("/connectExpress", function(req, res){
 schedule.scheduleJob('0 1 * * *', function(){
   
 	var refTermsAgreements = db.ref("termsAgreements");
+	var refBorrowRequests = db.ref("borrowRequests");
+
+	//Another thing we need to do is account for borrowRequests that never receive any termsAgreements 
+	//Esentially, what we should do is check against the repayDate and todaysDate (maybe?)... and if those two are the same, AND 
+	// if the value of 'requestClosed' is FALSE, than we can assume that they have not accepted any, or have not received any terms agreements 
+	//therefore, we will remove the borrowRequest and update the users 'hasActiveBorrowRequest' value to FALSE
+	refBorrowRequests.once("value", function(requests){
+		requests.forEach(function(childSnapshot){
+			var childData = childSnapshot.val();
+  			var key = childSnapshot.key;
+
+  			var repayDate = new Date(childData.repayDate.time).toLocaleDateString("en-US");
+		  	var todaysDate = new Date().toLocaleDateString("en-US");
+
+		  	if(repayDate.valueOf() == todaysDate.valueOf()){
+		  		if(childData.requestClosed != true){
+		  			//We're going to remove that borrow request... so they will no longer have an active one
+		  			db.ref("users/"+childData.userId).child("hasActiveBorrowRequest").set(false);
+		  			//Seems like this request has either, not received terms agreements, or has not accepted any 
+		  			//So we'll remove it. 
+		  			refBorrowRequests.child(key).removeValue();
+		  			console.log("Borrow request removed due to non acceptence of terms agreements, or not receiving any terms agreements.");
+		  		}
+		  	}
+		});
+	});
 
 	//This is going to use the DB reference to grab each termsAgreement once. Inside here, we can check the 'accepted' value
 	refTermsAgreements.once("value", function(data) {
