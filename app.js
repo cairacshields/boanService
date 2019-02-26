@@ -163,8 +163,8 @@ app.post("/charge", function(req, res){
 										  }
 										});
 							         
-						         	
-						         	res.send({statusMessage : "Charge results " + charge});
+						         	console.log("Charge went through line 143... charge results: " + charge);
+						         	//res.send({statusMessage : "Charge results " + charge});
 
 						         }
 						     });
@@ -232,8 +232,10 @@ schedule.scheduleJob('0 1 * * *', function(){
 			var childData = childSnapshot.val();
   			var key = childSnapshot.key;
 
-  			var repayDate = new Date(childData.repayDate.time).toLocaleDateString("en-US");
-		  	var todaysDate = new Date().toLocaleDateString("en-US");
+			// new Date(childData.repayDate.time()).toLocaleDateString("en-US");
+  			var repayDate = new Date(childData.repayDate).getTime();
+  			// new Date().toLocaleDateString("en-US");
+		  	var todaysDate = new Date().getTime();
 
 		  	if(repayDate.valueOf() == todaysDate.valueOf()){
 		  		if(childData.requestClosed != true){
@@ -259,8 +261,10 @@ schedule.scheduleJob('0 1 * * *', function(){
   				 if(childData.accepted == true){
   				 	if(childData.borrowerRepayed != true){
 	  				//Time to check the repay date, against today's date.
-		  			 var repayDate = new Date(childData.repayDate.time).toLocaleDateString("en-US");
-		  			 var todaysDate = new Date().toLocaleDateString("en-US");
+		  			 // new Date(childData.repayDate.time()).toLocaleDateString("en-US");
+  					var repayDate = new Date(childData.repayDate).getTime();
+  					// new Date().toLocaleDateString("en-US");
+		  			var todaysDate = new Date().getTime();
 
 		  			 if(repayDate.valueOf() == todaysDate.valueOf()){
 		  			 	//The repayDate is the same as today's date! Charge them! 
