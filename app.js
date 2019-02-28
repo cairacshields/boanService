@@ -78,13 +78,13 @@ app.post("/charge", function(req, res){
 						     function(err, charge) {
 						         if (err && err.type === 'StripeCardError') {
 						             console.log("The card has been declined");
-						             res.write("The card has been declined" + err)
+						             res.write("The card has been declined" + err);
 						             res.statusMessage = "There was an error line 69";
 						             res.send("There was an error " + err);
 						            
 						         }else if(err){
 						         	console.log("an error on line 72 " + err);
-									res.write("The card has been declined" + err)
+									res.write("The card has been declined" + err);
 						         }else{
 						      
 						         	console.log("Lender charged... from line 80");
@@ -114,7 +114,7 @@ app.post("/charge", function(req, res){
 
 					 	//Also need to set the new customerId value in the DB 
 					 	refUsers.child("customerId").set(customer.id);
-					 	console.log("Request is processing... creating new customer and sending the charge")
+					 	console.log("Request is processing... creating new customer and sending the charge");
 					 	}else{
 					 		res.write("error line 79 " + err);
 					 	}
@@ -138,12 +138,12 @@ app.post("/charge", function(req, res){
 						     function(err, charge) {
 						         if (err && err.type === 'StripeCardError') {
 						             console.log("The card has been declined");
-						             res.write("The card has been declined" + err)
+						             res.write("The card has been declined" + err);
 						             res.send({statusMessage : "There was an error " + err});
 						            
 						         }else if(err){
 						         	console.log("an error on line 108 " + err + " " + newAmount + " ," + centAmount + " ," + fee);
-									res.write("The card has been declined" + err)
+									res.write("The card has been declined" + err);
 						         }else{
 						         	console.log("Charge went through line 143... " + user.customerId);
 						         	
@@ -168,7 +168,7 @@ app.post("/charge", function(req, res){
 
 						         }
 						     });
-			    	console.log("Request is processing... using the existing customer id to create a charge.")
+			    	console.log("Request is processing... using the existing customer id to create a charge.");
 			    	//res.send("Request is processing... using the existing customer id to create a charge.");
 			    }else{ 
 			    	res.write("error line 107 " + err);
@@ -279,6 +279,7 @@ schedule.scheduleJob('0 1 * * *', function(){
 								var user = snapshot.val();
 								var stripeToken = user.stripeToken;
 								var userEmail = user.email;
+								
 								if(user.customerId == null){
 									//Current user, does not have a customer id... we need to create a customer object for them 
 									stripe.customers.create({
@@ -329,10 +330,10 @@ schedule.scheduleJob('0 1 * * *', function(){
 
 											 	//Also need to set the new customerId value in the DB 
 											 	refUsers.child("customerId").set(customer.id);
-											 	console.log("Request is processing... creating new customer and sending the charge")
+											 	console.log("Request is processing... creating new customer and sending the charge line 332");
 
 											 	}else{
-											 		res.write("error line 212 repayment" + err);
+											 		res.write("error line 335 repayment" + err);
 											 	}
 											});
 								}else if(user.customerId != null){
@@ -352,36 +353,37 @@ schedule.scheduleJob('0 1 * * *', function(){
 												     }, 
 												     function(err, charge) {
 												         if (err && err.type === 'StripeCardError') {
-												             console.log("The card has been declined for repayment");
+												             console.log("The card has been declined for repayment 355");
 												           	//Add code to change repay date to tomorrow 
 												           	 var date = new Date(childData.repayDate);
 												             var newRepayDate = date.setDate(date.getDate() + 1);
 
 												             //Not sure if this will work... but the hope is that, using the DB reference, we can grab the termsAgreement
 												             	//Then grab the original repayDate from that agreement and replace it with the newRepayDate.
-												             console.log("Tried changing the repayDate on line 320");		
+												             console.log("Tried changing the repayDate on line 362");		
 												             refTermsAgreements.child(childData.lenderUserId).child("repayDate").set(newRepayDate);
 												            
 												         }else if(err){
-												         	console.log("an error on line 108 for repayment" + err);
+												         	console.log("an error on line 366 for repayment" + err);
 															//Add code to change repay date to tomorrow 
 															 var date = new Date(childData.repayDate);
 												             var newRepayDate = date.setDate(date.getDate() + 1);
 
 												             //Not sure if this will work... but the hope is that, using the DB reference, we can grab the termsAgreement
 												             	//Then grab the original repayDate from that agreement and replace it with the newRepayDate.
-												             console.log("Tried changing the repayDate on line 330");	
+												             console.log("Tried changing the repayDate on line 373");	
 												             refTermsAgreements.child(childData.lenderUserId).child("repayDate").set(newRepayDate);
 												         }else{
-												         	console.log("Charged for repayment, agreement removed");
+												         	console.log("Charged for repayment, agreement removed 376");
 												         	//now completely remove the terms agreement from DB 
 												         	refTermsAgreements.child(childData.lenderUserId).child("borrowerRepayed").set(true);
 												         	refUsers.child("hasActiveBorrowRequest").set(false);
 												         }
 												     });
-									    	console.log("Request is processing... using the existing customer id to create a charge.")
+									    	console.log("Request is processing... using the existing customer id to create a charge line 382.");
 									    }else{ 
-									    	res.write("error line 243 for repayment" + err);
+									    	console.log("Error retrieving customer on line 384");
+									    	res.write("error line 358 for repayment" + err);
 									    }
 									  }
 									);
@@ -414,23 +416,25 @@ schedule.scheduleJob('0 1 * * *', function(){
 							}, function(err, transfer) {
 							// asynchronously called
 								if(err){
+									console.log("line 418");
 									console.log(err);
 								}else{
 									//Transfer seems to have went through, so remove the terms agreement here
+									console.log("line 422");
 									console.log(transfer);
 									refTermsAgreements.child(childData.lenderUserId).removeValue();
 								}
 						});
 
 				}, function (err, errorObject) {
-					console.log("The read failed: " + errorObject.code);
+					console.log("The read failed line 429: " + errorObject.code);
 					res.send(errorObject.code);
 				});
 			  }
 
 			 }else{
 				//Terms agreement hasn't been accepted yet... leave it alone 
-			  	console.log("Terms agreement " + childData.id + " has not been accepted");
+			  	console.log("Terms agreement " + childData.id + " has not been accepted line 436");
 			 }
   			});
 		});
