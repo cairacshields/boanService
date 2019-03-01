@@ -79,15 +79,15 @@ app.post("/charge", function(req, res){
 						         if (err && err.type === 'StripeCardError') {
 						             console.log("The card has been declined");
 						             res.write("The card has been declined" + err);
-						             res.statusMessage = "There was an error line 69";
+						             res.statusMessage = "There was an error line 82";
 						             res.send("There was an error " + err);
 						            
 						         }else if(err){
-						         	console.log("an error on line 72 " + err);
+						         	console.log("an error on line 86 " + err);
 									res.write("The card has been declined" + err);
 						         }else{
 						      
-						         	console.log("Lender charged... from line 80");
+						         	console.log("Lender charged... from line 90");
 
 						         		console.log(borrower.username);
 						        
@@ -116,7 +116,7 @@ app.post("/charge", function(req, res){
 					 	refUsers.child("customerId").set(customer.id);
 					 	console.log("Request is processing... creating new customer and sending the charge");
 					 	}else{
-					 		res.write("error line 79 " + err);
+					 		res.write("error line 119 " + err);
 					 	}
 					});
 		}else if(user.customerId != null){
@@ -142,10 +142,10 @@ app.post("/charge", function(req, res){
 						             res.send({statusMessage : "There was an error " + err});
 						            
 						         }else if(err){
-						         	console.log("an error on line 108 " + err + " " + newAmount + " ," + centAmount + " ," + fee);
+						         	console.log("an error on line 145 " + err + " " + newAmount + " ," + centAmount + " ," + fee);
 									res.write("The card has been declined" + err);
 						         }else{
-						         	console.log("Charge went through line 143... " + user.customerId);
+						         	console.log("Charge went through line 148... " + user.customerId);
 						         	
 						         		console.log(borrower.username);
 						         		//Send the borrower the money 
@@ -232,10 +232,10 @@ schedule.scheduleJob('0 1 * * *', function(){
 			var childData = childSnapshot.val();
   			var key = childSnapshot.key;
 
-			// new Date(childData.repayDate.time()).toLocaleDateString("en-US");
-  			var repayDate = new Date(childData.repayDate).getTime();
-  			// new Date().toLocaleDateString("en-US");
-		  	var todaysDate = new Date().getTime();
+			var repayDate = new Date(childData.repayDate.time()).toLocaleDateString("en-US");
+  			//var repayDate = new Date(childData.repayDate).getTime();
+  			var todaysDate = new Date().toLocaleDateString("en-US");
+		  	//var todaysDate = new Date().getTime();
 
 		  	if(repayDate.valueOf() == todaysDate.valueOf()){
 		  		if(childData.requestClosed != true){
@@ -261,10 +261,10 @@ schedule.scheduleJob('0 1 * * *', function(){
   				 if(childData.accepted == true){
   				 	if(childData.borrowerRepayed != true){
 	  				//Time to check the repay date, against today's date.
-		  			 // new Date(childData.repayDate.time()).toLocaleDateString("en-US");
-  					var repayDate = new Date(childData.repayDate).getTime();
-  					// new Date().toLocaleDateString("en-US");
-		  			var todaysDate = new Date().getTime();
+		  			var repayDate = new Date(childData.repayDate.time()).toLocaleDateString("en-US");
+  					//var repayDate = new Date(childData.repayDate).getTime();
+  					var todaysDate = new Date().toLocaleDateString("en-US");
+		  			//var todaysDate = new Date().getTime();
 
 		  			 if(repayDate.valueOf() == todaysDate.valueOf()){
 		  			 	//The repayDate is the same as today's date! Charge them! 
@@ -279,7 +279,7 @@ schedule.scheduleJob('0 1 * * *', function(){
 								var user = snapshot.val();
 								var stripeToken = user.stripeToken;
 								var userEmail = user.email;
-								
+
 								if(user.customerId == null){
 									//Current user, does not have a customer id... we need to create a customer object for them 
 									stripe.customers.create({
@@ -395,10 +395,10 @@ schedule.scheduleJob('0 1 * * *', function(){
 							});
 		  			 
 
-		  			 	console.log(repayDate.valueOf() + " same as " + todaysDate.valueOf());
+		  			 	console.log(repayDate.valueOf() + " same as " + todaysDate.valueOf() + " line 398");
 		  			 }else{
 		  			 	//The repay date is NOT today... leave the terms agreement alone 
-		  			 	console.log(repayDate.valueOf() + " not the same date as " + todaysDate.valueOf());
+		  			 	console.log(repayDate.valueOf() + " not the same date as " + todaysDate.valueOf() + " line 401");
 		  			 }
 				  
 			  }else{
