@@ -472,7 +472,9 @@ app.get("/testing", (req, res, next) => {
 		  			refBorrowRequests.child(key).removeValue();
 		  			console.log("Borrow request removed due to non acceptence of terms agreements, or not receiving any terms agreements.");
 		  		}
-		  		console.log("Borrow request not removed on line 475, date isn't the same.");
+		  	}else{
+				console.log("Borrow request not removed on line 475, date isn't the same. " + dateFormat(new Date(), "ddd mmm dd yyyy HH:MM:ss UTC") 
+					+ " " + dateFormat(new Date(childData.repayDate), "ddd mmm dd yyyy HH:MM:ss UTC") );
 		  	}
 		});
 	});
