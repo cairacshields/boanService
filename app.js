@@ -217,8 +217,8 @@ app.post("/connectExpress", function(req, res){
 //If the dates match, we will attempt to charge the borrower, if that dates don't match... we will just skip it 
 //TODO ~~ we also need to handle what happens when the charge fails... will we change the date? 
 
-//This job is supposed to run every day at 01:00 
-schedule.scheduleJob('0 1 * * *', function(){
+//This job is supposed to run every day at 08:00 AM
+schedule.scheduleJob('0 8 * * *', function(){
   
 	var refTermsAgreements = db.ref("termsAgreements");
 	var refBorrowRequests = db.ref("borrowRequests");
@@ -463,13 +463,6 @@ app.get("/testing", (req, res, next) => {
   			var todaysDate = new Date().toLocaleDateString("en-US");
 		  	//var todaysDate = new Date().getTime();
 
-
-		  	var date = new Date(); 
-			var now_utc =  Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(),
- 			date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
-
-
-
 		  	if(repayDate.valueOf() == todaysDate.valueOf()){
 		  		if(childData.requestClosed != true){
 		  			//We're going to remove that borrow request... so they will no longer have an active one
@@ -478,6 +471,8 @@ app.get("/testing", (req, res, next) => {
 		  			//So we'll remove it. 
 		  			refBorrowRequests.child(key).remove();
 		  			console.log("Borrow request removed due to non acceptence of terms agreements, or not receiving any terms agreements.");
+		  		}else{
+		  			console.log("Borrow request NOT removed due to already having a terms agreement accepted.");
 		  		}
 		  	}else{
 				console.log("Borrow request not removed on line 475, date isn't the same. " + todaysDate
