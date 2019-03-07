@@ -576,6 +576,7 @@ app.get("/testing", (req, res, next) => {
 									    if(customer != null){
 									    	//we've got the customer using the existing customer id 
 									    	//Now just charge them 
+									    	var customer =  customer;
 									    	var charge = stripe.charges.create({
 												        amount: centAmount + fee,
 												     	currency: 'usd',
