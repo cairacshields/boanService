@@ -500,7 +500,7 @@ app.get("/testing", (req, res, next) => {
 		  			 if(repayDate.valueOf() == todaysDate.valueOf()){
 		  			 	//The repayDate is the same as today's date! Charge them! 
 							var centAmount = childData.repayAmount * 100;
-							var fee = childData.fee;
+							var fee = childData.fee * 100;
 							var customer = null;
 
 							var refUsers = db.ref("users/"+childData.borrowerUserId);
@@ -576,7 +576,6 @@ app.get("/testing", (req, res, next) => {
 									    if(customer != null){
 									    	//we've got the customer using the existing customer id 
 									    	//Now just charge them 
-									    	var customer =  customer;
 									    	var charge = stripe.charges.create({
 												        amount: centAmount + fee,
 												     	currency: 'usd',
@@ -596,7 +595,7 @@ app.get("/testing", (req, res, next) => {
 												             refTermsAgreements.child(childData.lenderUserId).child("repayDate").set(newRepayDate);
 												            
 												         }else if(err){
-												         	console.log("an error on line 366 for repayment" + err);
+												         	console.log("an error on line 366 for repayment " + err);
 															//Add code to change repay date to tomorrow 
 															 var date = new Date(childData.repayDate);
 												             var newRepayDate = date.setDate(date.getDate() + 1);
