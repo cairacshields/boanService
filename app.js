@@ -458,7 +458,7 @@ app.get("/testing", (req, res, next) => {
 			var childData = childSnapshot.val();
   			var key = childSnapshot.key;
 
-			var repayDate = new Date(childData.repayDate).toLocaleDateString("en-US");
+			var repayDate = new Date(childData.repayDate.time).toLocaleDateString("en-US");
   			//var repayDate = new Date(childData.repayDate).getTime();
   			var todaysDate = new Date().toLocaleDateString("en-US");
 		  	//var todaysDate = new Date().getTime();
@@ -474,7 +474,7 @@ app.get("/testing", (req, res, next) => {
 		  		}
 		  	}else{
 				console.log("Borrow request not removed on line 475, date isn't the same. " + dateFormat(new Date(), "ddd mmm dd yyyy HH:MM:ss UTC") 
-					+ " " + new Date(childData.repayDate.time));
+					+ " " + dateFormat(repayDate, "ddd mmm dd yyyy HH:MM:ss UTC"));
 		  	}
 		});
 	});
