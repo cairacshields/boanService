@@ -481,7 +481,7 @@ app.get("/testing", (req, res, next) => {
 		  		}
 		  	}else{
 				console.log("Borrow request not removed on line 475, date isn't the same. " + date.getUTCDate()
-					+ " " + repayDate.getUTCDate());
+					+ " " + childData.repayDate.time.getUTCDate());
 		  	}
 		});
 	});
