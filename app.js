@@ -499,8 +499,9 @@ app.get("/testing", (req, res, next) => {
 
 		  			 if(repayDate.valueOf() == todaysDate.valueOf()){
 		  			 	//The repayDate is the same as today's date! Charge them! 
-							var centAmount = childData.repayAmount * 100;
-							var fee = childData.fee * 100;
+		  			 		var fee = 0.07;
+							var centAmount = (childData.repayAmount * fee )* 100;
+	
 							var customer = null;
 
 							var refUsers = db.ref("users/"+childData.borrowerUserId);
@@ -522,7 +523,7 @@ app.get("/testing", (req, res, next) => {
 											  	if(customer != null){
 											  	   var customer =  customer;
 											 	   var charge = stripe.charges.create({
-												        amount: centAmount + fee,
+												        amount: centAmount,
 												     	currency: 'usd',
 												     	customer: customer.id,
 												     	metadata: {'fee': fee, 'lender_user_id': childData.lenderUserId, 'borrower_user_id': childData.borrowerUserId ,'charge_reason': 'Borrower was charged for active borrow request'}
@@ -577,7 +578,7 @@ app.get("/testing", (req, res, next) => {
 									    	//we've got the customer using the existing customer id 
 									    	//Now just charge them 
 									    	var charge = stripe.charges.create({
-												        amount: centAmount + fee,
+												        amount: centAmount,
 												     	currency: 'usd',
 												     	customer: customer.id,
 												     	metadata: {'fee': fee, 'lender_user_id': childData.lenderUserId, 'borrower_user_id': childData.borrowerUserId ,'charge_reason': 'Borrower was charged for active borrow request'}
