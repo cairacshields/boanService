@@ -460,7 +460,7 @@ app.get("/testing", (req, res, next) => {
 
 			var repayDate = new Date(childData.repayDate.time).toLocaleDateString("en-US");
   			//var repayDate = new Date(childData.repayDate).getTime();
-  			var todaysDate = new Date().getDate().toLocaleDateString("en-US");
+  			var todaysDate = new Date().toLocaleDateString("en-US");
 		  	//var todaysDate = new Date().getTime();
 
 		  	if(repayDate.valueOf() == todaysDate.valueOf()){
@@ -473,7 +473,7 @@ app.get("/testing", (req, res, next) => {
 		  			console.log("Borrow request removed due to non acceptence of terms agreements, or not receiving any terms agreements.");
 		  		}
 		  	}else{
-				console.log("Borrow request not removed on line 475, date isn't the same. " + dateFormat(todaysDate, "ddd mmm dd yyyy HH:MM:ss UTC") 
+				console.log("Borrow request not removed on line 475, date isn't the same. " + dateFormat(new Date().getTime(), "ddd mmm dd yyyy HH:MM:ss UTC") 
 					+ " " + dateFormat(repayDate, "ddd mmm dd yyyy HH:MM:ss UTC"));
 		  	}
 		});
