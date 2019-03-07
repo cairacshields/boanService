@@ -476,7 +476,7 @@ app.get("/testing", (req, res, next) => {
 		  			db.ref("users/"+childData.userId).child("hasActiveBorrowRequest").set(false);
 		  			//Seems like this request has either, not received terms agreements, or has not accepted any 
 		  			//So we'll remove it. 
-		  			childSnapshot.val().remove();
+		  			refBorrowRequests.child(key).remove();
 		  			console.log("Borrow request removed due to non acceptence of terms agreements, or not receiving any terms agreements.");
 		  		}
 		  	}else{
