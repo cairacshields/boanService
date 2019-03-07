@@ -460,7 +460,7 @@ app.get("/testing", (req, res, next) => {
 
 			var repayDate = new Date(childData.repayDate.time).toLocaleDateString("en-US");
   			//var repayDate = new Date(childData.repayDate).getTime();
-  			var todaysDate = new Date().time().toLocaleDateString("en-US");
+  			var todaysDate = new Date().getDate().toLocaleDateString("en-US");
 		  	//var todaysDate = new Date().getTime();
 
 		  	if(repayDate.valueOf() == todaysDate.valueOf()){
