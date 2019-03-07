@@ -492,7 +492,7 @@ app.get("/testing", (req, res, next) => {
   				 if(childData.accepted == true){
   				 	if(childData.borrowerRepayed != true){
 	  				//Time to check the repay date, against today's date.
-		  			var repayDate = new Date(childData.repayDate.time()).toLocaleDateString("en-US");
+		  			var repayDate = new Date(childData.repayDate.time).toLocaleDateString("en-US");
   					//var repayDate = new Date(childData.repayDate).getTime();
   					var todaysDate = new Date().toLocaleDateString("en-US");
 		  			//var todaysDate = new Date().getTime();
