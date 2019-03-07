@@ -458,10 +458,17 @@ app.get("/testing", (req, res, next) => {
 			var childData = childSnapshot.val();
   			var key = childSnapshot.key;
 
-			var repayDate = new Date.UTC(childData.repayDate.time).toLocaleDateString("en-US");
+			var repayDate = new Date(childData.repayDate.time).toLocaleDateString("en-US");
   			//var repayDate = new Date(childData.repayDate).getTime();
   			var todaysDate = new Date().toLocaleDateString("en-US");
 		  	//var todaysDate = new Date().getTime();
+
+
+		  	var date = new Date(); 
+			var now_utc =  Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(),
+ 			date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
+
+
 
 		  	if(repayDate.valueOf() == todaysDate.valueOf()){
 		  		if(childData.requestClosed != true){
@@ -473,7 +480,7 @@ app.get("/testing", (req, res, next) => {
 		  			console.log("Borrow request removed due to non acceptence of terms agreements, or not receiving any terms agreements.");
 		  		}
 		  	}else{
-				console.log("Borrow request not removed on line 475, date isn't the same. " + dateFormat(new Date(), "default", true)
+				console.log("Borrow request not removed on line 475, date isn't the same. " + dateFormat(now_utc, "default", true)
 					+ " " + dateFormat(repayDate, "default", true));
 		  	}
 		});
