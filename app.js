@@ -499,8 +499,9 @@ app.get("/testing", (req, res, next) => {
 
 		  			 if(repayDate.valueOf() == todaysDate.valueOf()){
 		  			 	//The repayDate is the same as today's date! Charge them! 
-		  			 		var fee = 0.07;
-							var centAmount = (childData.repayAmount * fee )* 100;
+		  			 		//Ensure we are charging the 7% fee to borrower repayments 
+		  			 		var fee = childData.repayAmount * 0.07;
+							var centAmount = (childData.repayAmount + fee )* 100;
 	
 							var customer = null;
 
@@ -530,32 +531,32 @@ app.get("/testing", (req, res, next) => {
 												     }, 
 												     function(err, charge) {
 												         if (err && err.type === 'StripeCardError') {
-												             console.log("The card has been declined for repayment " + err.type);
+												             console.log("The card has been declined for repayment " + err);
 												             //Add code to change repay date to tomorrow 
-												             var date = new Date(childData.repayDate);
+												             var date = new Date(childData.repayDate.time);
 												             var newRepayDate = date.setDate(date.getDate() + 1);
 
 												             //Not sure if this will work... but the hope is that, using the DB reference, we can grab the termsAgreement
 												             	//Then grab the original repayDate from that agreement and replace it with the newRepayDate.
 												             console.log("Tried changing the repayDate on line 269");		
-												             refTermsAgreements.child(childData.lenderUserId).child("repayDate").set(newRepayDate);
+												             refTermsAgreements.child(childData.lenderUserId+childData.borrowerUserId).child("repayDate").set(newRepayDate);
 
 
 												         }else if(err){
 												         	console.log("an error on line 197 for repayment" + err);
 															//Add code to change repay date to tomorrow 
-															var date = new Date(childData.repayDate);
+															var date = new Date(childData.repayDate.time);
 												             var newRepayDate = date.setDate(date.getDate() + 1);
 
 												             //Not sure if this will work... but the hope is that, using the DB reference, we can grab the termsAgreement
 												             	//Then grab the original repayDate from that agreement and replace it with the newRepayDate.
 												             console.log("Tried changing the repayDate on line 280");		
-												             refTermsAgreements.child(childData.lenderUserId).child("repayDate").set(newRepayDate);
+												             refTermsAgreements.child(childData.lenderUserId+childData.borrowerUserId).child("repayDate").set(newRepayDate);
 
 												         }else{
 												         	console.log("Charged for repayment, agreement updated");
 												         	//now update the 'borrowerRepayed' value to be true
-												         	refTermsAgreements.child(childData.lenderUserId).child("borrowerRepayed").set(true);
+												         	refTermsAgreements.child(childData.lenderUserId+childData.borrowerUserId).child("borrowerRepayed").set(true);
 												         	refUsers.child("hasActiveBorrowRequest").set(false);
 												         }
 												     });
@@ -587,28 +588,28 @@ app.get("/testing", (req, res, next) => {
 												         if (err && err.type === 'StripeCardError') {
 												             console.log("The card has been declined for repayment 355 " + err);
 												           	//Add code to change repay date to tomorrow 
-												           	 var date = new Date(childData.repayDate);
+												           	 var date = new Date(childData.repayDate.time);
 												             var newRepayDate = date.setDate(date.getDate() + 1);
 
 												             //Not sure if this will work... but the hope is that, using the DB reference, we can grab the termsAgreement
 												             	//Then grab the original repayDate from that agreement and replace it with the newRepayDate.
 												             console.log("Tried changing the repayDate on line 362");		
-												             refTermsAgreements.child(childData.lenderUserId).child("repayDate").set(newRepayDate);
+												             refTermsAgreements.child(childData.lenderUserId+childData.borrowerUserId).child("repayDate").set(newRepayDate);
 												            
 												         }else if(err){
 												         	console.log("an error on line 366 for repayment " + err);
 															//Add code to change repay date to tomorrow 
-															 var date = new Date(childData.repayDate);
+															 var date = new Date(childData.repayDate.time);
 												             var newRepayDate = date.setDate(date.getDate() + 1);
 
 												             //Not sure if this will work... but the hope is that, using the DB reference, we can grab the termsAgreement
 												             	//Then grab the original repayDate from that agreement and replace it with the newRepayDate.
 												             console.log("Tried changing the repayDate on line 373");	
-												             refTermsAgreements.child(childData.lenderUserId).child("repayDate").set(newRepayDate);
+												             refTermsAgreements.child(childData.lenderUserId+childData.borrowerUserId).child("repayDate").set(newRepayDate);
 												         }else{
-												         	console.log("Charged for repayment, agreement removed 376");
+												         	console.log("Charged for repayment, agreement updated 376");
 												         	//now completely remove the terms agreement from DB 
-												         	refTermsAgreements.child(childData.lenderUserId).child("borrowerRepayed").set(true);
+												         	refTermsAgreements.child(childData.lenderUserId+childData.borrowerUserId).child("borrowerRepayed").set(true);
 												         	refUsers.child("hasActiveBorrowRequest").set(false);
 												         }
 												     });
@@ -648,13 +649,13 @@ app.get("/testing", (req, res, next) => {
 							}, function(err, transfer) {
 							// asynchronously called
 								if(err){
-									console.log("line 418");
+									console.log("Error transfering to lender from borrower: line 418");
 									console.log(err);
 								}else{
 									//Transfer seems to have went through, so remove the terms agreement here
-									console.log("line 422");
+									console.log("Transfer went through from borrower to lender: line 422");
 									console.log(transfer);
-									refTermsAgreements.child(childData.lenderUserId).removeValue();
+									refTermsAgreements.child(childData.lenderUserId+childData.borrowerUserId).remove();
 								}
 						});
 
