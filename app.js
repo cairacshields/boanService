@@ -458,7 +458,7 @@ app.get("/testing", (req, res, next) => {
 			var childData = childSnapshot.val();
   			var key = childSnapshot.key;
 
-			var repayDate = new Date(Date.UTC(childData.repayDate.time)).toLocaleDateString("en-US");
+			var repayDate = new Date.UTC(childData.repayDate.time).toLocaleDateString("en-US");
   			//var repayDate = new Date(childData.repayDate).getTime();
   			var todaysDate = new Date().toLocaleDateString("en-US");
 		  	//var todaysDate = new Date().getTime();
