@@ -529,7 +529,7 @@ app.get("/testing", (req, res, next) => {
 												     }, 
 												     function(err, charge) {
 												         if (err && err.type === 'StripeCardError') {
-												             console.log("The card has been declined for repayment");
+												             console.log("The card has been declined for repayment " + err.type);
 												             //Add code to change repay date to tomorrow 
 												             var date = new Date(childData.repayDate);
 												             var newRepayDate = date.setDate(date.getDate() + 1);
