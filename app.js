@@ -78,7 +78,7 @@ app.post("/charge", function(req, res){
 						     function(err, charge) {
 						         if (err && err.type === 'StripeCardError') {
 						             console.log("The card has been declined");
-						             res.write("The card has been declined" + err);
+						             res.write("The card has been declined " + err);
 						             res.statusMessage = "There was an error line 82";
 						             res.send("There was an error " + err);
 						            
@@ -277,7 +277,7 @@ schedule.scheduleJob('0 8 * * *', function(){
 							//Step 1. check the DB to see if the user already has a customer ID on file 
 						   refUsers.on("value", function(snapshot) {
 								var user = snapshot.val();
-								var stripeToken = user.stripeToken;
+								var stripeToken = user.token;
 								var userEmail = user.email;
 
 								if(user.customerId == null){
@@ -510,7 +510,7 @@ app.get("/testing", (req, res, next) => {
 							//Step 1. check the DB to see if the user already has a customer ID on file 
 						   refUsers.on("value", function(snapshot) {
 								var user = snapshot.val();
-								var stripeToken = user.stripeToken;
+								var stripeToken = user.token;
 								var userEmail = user.email;
 
 								if(user.customerId == null){
@@ -546,7 +546,8 @@ app.get("/testing", (req, res, next) => {
 												         	console.log("an error on line 197 for repayment" + err);
 															//Add code to change repay date to tomorrow 
 															var date = new Date(childData.repayDate.time);
-												             var newRepayDate = date.setDate(date.getDate() + 1);
+												             //var newRepayDate = date.setDate(date.getDate() + 1);
+												             var newRepayDate = new Date(childData.repayDate + 1);
 
 												             //Not sure if this will work... but the hope is that, using the DB reference, we can grab the termsAgreement
 												             	//Then grab the original repayDate from that agreement and replace it with the newRepayDate.
@@ -586,7 +587,7 @@ app.get("/testing", (req, res, next) => {
 												     }, 
 												     function(err, charge) {
 												         if (err && err.type === 'StripeCardError') {
-												             console.log("The card has been declined for repayment 355 " + err);
+												             console.log("The card has been declined for repayment 355 " + customer.id+ " " +err);
 												           	//Add code to change repay date to tomorrow 
 												           	 var date = new Date(childData.repayDate.time);
 												             var newRepayDate = date.setDate(date.getDate() + 1);
